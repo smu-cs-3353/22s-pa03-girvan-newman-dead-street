@@ -9,4 +9,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast")
 
-add_executable(22s_PA03 src/main.cpp)
+add_executable(22s_PA03 src/main.cpp src/Girvan_Newman.cpp src/Girvan_Newman.h)
