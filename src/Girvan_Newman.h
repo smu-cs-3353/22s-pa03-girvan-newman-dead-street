@@ -10,9 +10,18 @@
 
 class Girvan_Newman {
     private:
-        boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> test;
+            boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> test;
+            //^this seems to be class rather than an actual container
 
+            /* for clarification on the parameters in <>:
+             * 1st boost::vecS = vertices are stored in a vector
+             * 2nd boost::vecS = edges are stored in a vector
+             * boost::undirectedS = means the graph is undirected
+             * the last 2 (not listed) are vertex & edge properties, create a struct above for vertex data?
+             * */
     public:
+            Girvan_Newman(); //do we need a default constructor?
+            //constructor that will take in a dataset and create the graph
 };
 
 
