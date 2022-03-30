@@ -7,6 +7,8 @@
 
 #include <boost/graph/graph_utility.hpp>
 #include <boost/graph/graphml.hpp>
+#include <boost/property_map/dynamic_property_map.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <fstream>
 #include <string>
 
@@ -16,8 +18,9 @@ Girvan_Newman::Girvan_Newman(std::string& file){
     std::ifstream read(file);
     if(read.is_open()){
 
-        boost::dynamic_properties dp;
-        dp.property("name", boost::get(&VertexData::name, graph));
+//        boost::dynamic_properties dp;
+//        dp.property("name", boost::get(&VertexData::name, graph));
+//        boost::read_graphml(read, graph, dp); //Creates an error though I can't figure out why
     }
     else
         throw std::runtime_error("Unable to read the input data file");

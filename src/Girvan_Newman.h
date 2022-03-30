@@ -18,7 +18,7 @@ class Girvan_Newman {
     private:
 
             typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                          VertexData, std::string>> Graph;
+                                          VertexData> Graph;
             Graph graph;
 
             /* for clarification on the parameters in <>:
