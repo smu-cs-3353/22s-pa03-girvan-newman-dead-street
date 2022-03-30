@@ -11,15 +11,15 @@
 #include <string>
 
 struct VertexData{
-    std::string Name;
+    std::string name;
 };
 
 class Girvan_Newman {
     private:
 
             typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                          boost::property<boost::vertex_name_t, std::string>> Graph;
-            Graph test;
+                                          VertexData, std::string>> Graph;
+            Graph graph;
 
             /* for clarification on the parameters in <>:
              * 1st boost::vecS = vertices are stored in a vector

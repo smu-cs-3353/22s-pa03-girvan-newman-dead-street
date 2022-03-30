@@ -16,7 +16,8 @@ Girvan_Newman::Girvan_Newman(std::string& file){
     std::ifstream read(file);
     if(read.is_open()){
 
-        //
+        boost::dynamic_properties dp;
+        dp.property("name", boost::get(&VertexData::name, graph));
     }
     else
         throw std::runtime_error("Unable to read the input data file");
@@ -25,11 +26,12 @@ Girvan_Newman::Girvan_Newman(std::string& file){
 //Outputs the graph's vertices and edges
 void Girvan_Newman::printGraph(){
 
-    if(boost::num_vertices(test) == 0)
+    if(boost::num_vertices(graph) == 0)
         std::cout << "Graph is empty" << std::endl;
     else{
-        std::cout << "Graph: " << boost::num_vertices(test) << " vertices, " << boost::num_edges(test)
+
+        std::cout << "Graph: " << boost::num_vertices(graph) << " vertices, " << boost::num_edges(graph)
                   << " edges" << std::endl;
-        boost::print_graph(test, boost::get(boost::vertex_name, test));
+        boost::print_graph(graph, boost::get(&VertexData::name, graph));
     }
 }
