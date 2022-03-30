@@ -17,7 +17,7 @@ Girvan_Newman::Girvan_Newman(std::string& file){
     if(read.is_open()){
 
         boost::dynamic_properties dp; //has to be defined but I'm not quite sure what we need
-        boost::read_graphml(read, test, dp);
+        boost::read_graphml(read, test, dp); //currently gives an error
     }
     else
         throw std::runtime_error("Unable to read the input data file");

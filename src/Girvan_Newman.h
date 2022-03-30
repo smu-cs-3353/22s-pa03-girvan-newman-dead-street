@@ -30,6 +30,11 @@ class Girvan_Newman {
     public:
             Girvan_Newman(std::string&);
             void printGraph();
+            ////TO DO
+            //function to calculate edge-betweeness
+            //separate function to remove edges
+            //function to cluster
+            //function for the algo itself and output results
 };
 
 
