@@ -28,9 +28,8 @@ class Girvan_Newman {
              * We can also redefine the vertices if the GraphML defines them differently
              * */
     public:
-            Girvan_Newman(std::string&); //Creates an unweighted and undirected graph from a given GraphML file
-            //constructor that will take in a dataset and create the graph
-            //consider using [using namespace boost;] to minimize the boost calls
+            Girvan_Newman(std::string&);
+            void printGraph();
 };
 
 
