@@ -28,6 +28,9 @@ void Girvan_Newman::printGraph(){
 
     if(boost::num_vertices(test) == 0)
         std::cout << "Graph is empty" << std::endl;
-    else
+    else{
+        std::cout << boost::num_vertices(test) << " vertices, " << boost::num_edges(test)
+                  << " edges" << std::endl;
         boost::print_graph(test, boost::get(boost::vertex_name, test));
+    }
 }
