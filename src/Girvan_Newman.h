@@ -10,6 +10,10 @@
 #include <boost/graph/properties.hpp>
 #include <string>
 
+struct VertexData{
+    std::string Name;
+};
+
 class Girvan_Newman {
     private:
 

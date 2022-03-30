@@ -5,14 +5,13 @@
 ***************************************/
 
 #include <iostream>
-#include <boost/graph/adjacency_list.hpp>
+#include "Girvan_Newman.h"
 
 int main(int argc, char **argv) {
 
-    //type here to begin
-    std::cout << "We can do this!" << std::endl;
-    boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> test;
-    std::cout << boost::num_vertices(test) << std::endl;
+    //Testing Girvan Newman Algorithm
+//    Girvan_Newman test(argv[1]);
+//    test.printGraph();
 
     return EXIT_SUCCESS;
 }
