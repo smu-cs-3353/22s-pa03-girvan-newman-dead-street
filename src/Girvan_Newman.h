@@ -10,15 +10,17 @@
 #include <boost/graph/properties.hpp>
 #include <string>
 
+using namespace boost;
+
 struct VertexData{
-    std::string name;
+    std::string id;
+    long value;
 };
 
 class Girvan_Newman {
     private:
 
-            typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                          VertexData> Graph;
+            typedef adjacency_list<vecS, vecS, undirectedS, VertexData> Graph;
             Graph graph;
 
             /* for clarification on the parameters in <>:
@@ -32,12 +34,17 @@ class Girvan_Newman {
              * We can also redefine the vertices if the GraphML defines them differently
              * */
     public:
-            Girvan_Newman(std::string&);
+            Girvan_Newman(const std::string&);
             void printGraph();
             ////TO DO
-            //function to calculate edge-betweeness
-            //separate function to remove edges
-            //function to cluster
+            void findShortestPaths(VertexData& start, VertexData& end);
+            //function to find all shortest paths <- use bidirectional search?
+            //what should we return?
+
+            //function to calculate edge-betweenness
+
+            //function to remove edges
+            //function to cluster?
             //function for the algo itself and output results
 };
 

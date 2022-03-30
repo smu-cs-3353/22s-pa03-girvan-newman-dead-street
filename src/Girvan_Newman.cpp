@@ -10,15 +10,18 @@
 #include <fstream>
 #include <string>
 
+using namespace boost;
+
 //Creates an unweighted and undirected graph from the passed GraphML file
-Girvan_Newman::Girvan_Newman(std::string& file){
+Girvan_Newman::Girvan_Newman(const std::string& file){
 
     std::ifstream read(file);
     if(read.is_open()){
 
-        boost::dynamic_properties dp(boost::ignore_other_properties);
-        dp.property("name", boost::get(&VertexData::name, graph));
-        boost::read_graphml(read, graph, dp);
+        dynamic_properties dp(ignore_other_properties);
+        dp.property("id", get(&VertexData::id, graph));
+        dp.property("value", get(&VertexData::value, graph));
+        read_graphml(read, graph, dp);
     }
     else
         throw std::runtime_error("Unable to read the input data file");
@@ -27,12 +30,20 @@ Girvan_Newman::Girvan_Newman(std::string& file){
 //Outputs the graph's vertices and edges
 void Girvan_Newman::printGraph(){
 
-    if(boost::num_vertices(graph) == 0)
+    if(num_vertices(graph) == 0)
         std::cout << "Graph is empty" << std::endl;
     else{
 
-        std::cout << "Graph: " << boost::num_vertices(graph) << " vertices, " << boost::num_edges(graph)
+        std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
-        boost::print_graph(graph, boost::get(&VertexData::name, graph));
+
+        print_graph(graph, get(&VertexData::id, graph));
     }
+}
+
+/* Uses a bidirectional search to find the shortest paths for all nodes.
+ * Returns anything? */
+void Girvan_Newman::findShortestPaths(VertexData& start, VertexData& end){
+    //need to avoid duplicate paths ex: (A, B) & (B, A) are the same
+    //
 }
