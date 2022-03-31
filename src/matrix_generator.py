@@ -27,6 +27,7 @@ def get_adjacency_matrix(graph):
 def __dice_similarity(graph):
     node_dict = defaultdict(list)
     node_similarities = []
+
     for node in graph:
         for neighbor in graph.neighbors(node):
             node_dict[node].append(neighbor)
@@ -41,12 +42,14 @@ def __dice_similarity(graph):
             )
     assert len(node_similarities) % graph.number_of_nodes() == 0, "Dice matrix generation failure"
     similarity_matrix = np.array(node_similarities).reshape(-1, graph.number_of_nodes())
+
     return similarity_matrix
 
 
 def __overlap_similarity(graph):
     node_dict = defaultdict(list)
     node_similarities = []
+
     for node in graph:
         for neighbor in graph.neighbors(node):
             node_dict[node].append(neighbor)
@@ -61,6 +64,7 @@ def __overlap_similarity(graph):
             )
     assert len(node_similarities) % graph.number_of_nodes() == 0, "Overlap matrix generation failure"
     similarity_matrix = np.array(node_similarities).reshape(-1, graph.number_of_nodes())
+
     return similarity_matrix
 
 # TODO: Add abundance version of Sørensen–Dice coefficient
