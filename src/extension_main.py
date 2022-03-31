@@ -21,7 +21,9 @@ if not os.path.isdir(os.getcwd() + "\..\data"):
 # Step one: Import a graph
 graph = netx.read_graphml(sys.argv[1])
 # Step two: Convert graph into similarity matrix form
-
+adj_matrix = get_adjacency_matrix(graph)  # Test case, known good matrix form
+sim_matrix = get_similarity_matrix(graph, "DICE")  # Control case, uses Sørensen–Dice coefficient
+alt_sim_matrix = get_similarity_matrix(graph, "OVERLAP")  # Experimental case, uses Overlap coefficient
 # Step three: Run deep sparse filtering (2+ layers) on each matrix
 
 # Step four: Run clustering algorithm on sparse matrix
