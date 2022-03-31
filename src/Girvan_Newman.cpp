@@ -19,7 +19,6 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
     if(read.is_open()){
 
         dynamic_properties dp(ignore_other_properties);
-        dp.property("id", get(&VertexData::id, graph));
         dp.property("value", get(&VertexData::value, graph));
         read_graphml(read, graph, dp);
     }
@@ -27,7 +26,7 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         throw std::runtime_error("Unable to read the input data file");
 }
 
-//Outputs the graph's vertices and edges
+//Outputs the graph's vertices and edges to the console
 void Girvan_Newman::printGraph(){
 
     if(num_vertices(graph) == 0)
@@ -37,7 +36,7 @@ void Girvan_Newman::printGraph(){
         std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
 
-        print_graph(graph, get(&VertexData::id, graph));
+        print_graph(graph, get(&VertexData::value, graph));
     }
 }
 
