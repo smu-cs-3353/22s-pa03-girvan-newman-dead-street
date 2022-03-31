@@ -21,6 +21,7 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         dynamic_properties dp(ignore_other_properties);
         dp.property("name", get(&VertexData::name, graph));
         dp.property("value", get(&VertexData::value, graph));
+
         read_graphml(read, graph, dp);
     }
     else
@@ -30,25 +31,27 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
 //Outputs the graph's vertices and edges to the console
 void Girvan_Newman::printGraph(){
 
-    if(num_vertices(graph) == 0)
-        std::cout << "Graph is empty" << std::endl;
+    if(num_vertices(graph) == 0 || num_edges(graph) == 0)
+        throw std::runtime_error("Graph is empty");
     else{
 
         std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
 
-//        for(auto ed: boost::make_iterator_range(boost::edges(graph))){
-//            std::cout << ed << " " << get(&VertexData::id, graph, boost::source(ed, graph)) << " -> "
-//                 << get(&VertexData::id, graph, boost::target(ed, graph)) << std::endl;
-//        }
-
+//        std::cout << graph[num_vertices(graph)-1].name << std::endl;
         print_graph(graph, get(&VertexData::name, graph));
+        //print the graph to a file
     }
 }
 
-/* Uses a bidirectional search to find the shortest paths for all nodes.
+/* Uses a bidirectional search to generate the shortest paths for all nodes.
  * Returns anything? */
 void Girvan_Newman::findShortestPaths(VertexData& start, VertexData& end){
+
+    if(num_vertices(graph) == 0 || num_edges(graph) == 0)
+        throw std::runtime_error("Graph is empty");
+
     //need to avoid duplicate paths ex: (A, B) & (B, A) are the same
-    //
+
+    auto ed = edges(graph);
 }
