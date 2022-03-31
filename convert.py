@@ -8,4 +8,3 @@ path = "/Users/Michael/Desktop/Random SMU docs/football/"
 graph = nx.read_gml(path+"football.gml")
 # graphml = nx.generate_graphml(gml)
 nx.write_graphml(graph, path+"converted.graphml")
-
