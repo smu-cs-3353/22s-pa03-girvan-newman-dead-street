@@ -37,7 +37,7 @@ class Girvan_Newman {
             Girvan_Newman(const std::string&);
             void printGraph();
             ////TO DO
-            void findShortestPaths(VertexData& start, VertexData& end);
+            void findShortestPaths();
             //function to find all shortest paths <- use bidirectional search?
             //what should we return?
 

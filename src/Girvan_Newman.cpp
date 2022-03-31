@@ -9,6 +9,7 @@
 #include <boost/graph/graphml.hpp>
 #include <fstream>
 #include <string>
+#include <vector>
 
 using namespace boost;
 
@@ -46,12 +47,14 @@ void Girvan_Newman::printGraph(){
 
 /* Uses a bidirectional search to generate the shortest paths for all nodes.
  * Returns anything? */
-void Girvan_Newman::findShortestPaths(VertexData& start, VertexData& end){
+void Girvan_Newman::findShortestPaths(){
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
     //need to avoid duplicate paths ex: (A, B) & (B, A) are the same
-
-    auto ed = edges(graph);
+//    std::vector<std::pair<Graph::vertex_descriptor, bool>> visited(num_vertices(graph));
+//    for(auto vp = boost::vertices(graph); vp.first != vp.second; vp.first++){
+//        visited.emplace_back(std::make);
+//    }
 }
