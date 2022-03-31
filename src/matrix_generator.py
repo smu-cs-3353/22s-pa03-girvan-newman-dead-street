@@ -42,3 +42,25 @@ def __dice_similarity(graph):
     assert len(node_similarities) % graph.number_of_nodes() == 0, "Dice matrix generation failure"
     similarity_matrix = np.array(node_similarities).reshape(-1, graph.number_of_nodes())
     return similarity_matrix
+
+
+def __overlap_similarity(graph):
+    node_dict = defaultdict(list)
+    node_similarities = []
+    for node in graph:
+        for neighbor in graph.neighbors(node):
+            node_dict[node].append(neighbor)
+
+    # Is there a library to compute dictionary permutations? Yes. Would I be able to look anybody in the class in the
+    # eyes after using it? No.
+    for x_neighbors in node_dict.values():
+        for y_neighbors in node_dict.values():
+            node_similarities.append(
+                # |X ∩ Y| / min(|X|, |Y|); Overlap coefficient
+                len(list(set(x_neighbors) & set(y_neighbors))) / min(len(x_neighbors), len(y_neighbors))
+            )
+    assert len(node_similarities) % graph.number_of_nodes() == 0, "Overlap matrix generation failure"
+    similarity_matrix = np.array(node_similarities).reshape(-1, graph.number_of_nodes())
+    return similarity_matrix
+
+# TODO: Add abundance version of Sørensen–Dice coefficient
