@@ -9,6 +9,15 @@ from matrix_generator import get_adjacency_matrix
 import networkx as netx
 import sys
 
+# Step zero: Sanity checks
+if len(sys.argv) == 1:
+    raise RuntimeError("Extension must have graph filename specified as an argument.\n"
+                       "Format: python3 extension_main.py C:\\Reachable\\File\\Path.graphml")
+
+if not os.path.isdir(os.getcwd() + "\..\data"):
+    raise RuntimeError("Invalid working directory relative to data directory.\n"
+                       "Please check your run configuration")
+
 # Step one: Import a graph
 graph = netx.read_graphml(sys.argv[1])
 # Step two: Convert graph into similarity matrix form
