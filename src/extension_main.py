@@ -1,6 +1,8 @@
 """****************************************************
 * CS 3353 - PA 03
-* Description:
+* Description: Compute potential communities by
+* leveraging deep sparse filtering on matrix
+* representations of a provided graph.
 ****************************************************"""
 import os
 
