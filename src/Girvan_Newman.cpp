@@ -7,6 +7,7 @@
 
 #include <boost/graph/graph_utility.hpp>
 #include <boost/graph/graphml.hpp>
+#include <iterator>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -29,7 +30,7 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         throw std::runtime_error("Unable to read the input data file");
 }
 
-//Outputs the graph's vertices and edges to the console
+//Outputs the graph's vertices and edges by their names to the console
 void Girvan_Newman::printGraph(){
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
@@ -39,9 +40,73 @@ void Girvan_Newman::printGraph(){
         std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
 
-//        std::cout << graph[num_vertices(graph)-1].name << std::endl;
-        print_graph(graph, get(&VertexData::name, graph));
-        //print the graph to a file
+//        print_graph(graph, get(&VertexData::name, graph));
+        print_graph(graph, std::cout); //prints the vertices and edges by their indexes
+    }
+}
+
+/* Helper function for biDirSearch. Returns true if the forward and backward searches
+ * visit the same node.*/
+int Girvan_Newman::isIntersecting(bool* s_visit, bool* t_visit) {
+
+    for(int i = 0; i < num_vertices(graph); i++){
+
+        if(s_visit[i] && t_visit[i])
+            return i; //change to index of vertex that is intersected
+    }
+    return -1;
+}
+
+/* Helper function for biDirSearch. */
+void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::vertex_descriptor* prev,
+                        bool* visited){
+
+    Graph::vertex_descriptor current = queue->front();
+    queue->pop_front();
+
+    for(auto adj: make_iterator_range(adjacent_vertices(current, graph))){
+
+        if(!visited[*adj.first]){
+
+            prev[*adj.first] = current;
+            visited[*adj.first] = true;
+            queue->push_back();
+        }
+    }
+}
+
+/* Searches from the source and target vertices to generate their shortest paths.
+ * Referenced from GeeksforGeeks: https://www.geeksforgeeks.org/bidirectional-search/ */
+void Girvan_Newman::biDirSearch(Graph::vertex_descriptor& source, Graph::vertex_descriptor& target){
+
+    //keeps track of visited nodes
+    bool s_visited[num_vertices(graph)], t_visited[num_vertices(graph)];
+    Graph::vertex_descriptor s_prev[num_vertices(graph)], t_prev[num_vertices(graph)];
+    for(int i = 0; i < num_vertices(graph); i++){
+        s_visited[i] = false;
+        t_visited[i] = false;
+    }
+
+    std::list<Graph::vertex_descriptor> s_queue, t_queue;
+    s_queue.push_back(source);
+    s_visited[source] = true;
+    s_prev[source] = -1; //vertex_descriptors are the vertex's index
+
+    t_queue.push_back(target);
+    t_visited[target] = true;
+    t_prev[target] = -1;
+
+    while(!s_queue.empty() && !t_queue.empty()){
+
+        BFS(&s_queue, s_prev, s_visited);
+        BFS(&t_queue, t_prev, t_visited);
+
+        int intersectNode = isIntersecting(s_visited, t_visiited);
+
+        //If a path is found, store the path in a vector<vector>??
+        if(intersectNode != -1){
+            //
+        }
     }
 }
 
@@ -52,9 +117,15 @@ void Girvan_Newman::findShortestPaths(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    //need to avoid duplicate paths ex: (A, B) & (B, A) are the same
-//    std::vector<std::pair<Graph::vertex_descriptor, bool>> visited(num_vertices(graph));
-//    for(auto vp = boost::vertices(graph); vp.first != vp.second; vp.first++){
-//        visited.emplace_back(std::make);
-//    }
+    //iterate through all pairs, avoid what has been visited previously
+}
+
+//function for the algo itself and output results to a file
+void Girvan_Newman::computeGroups(){
+
+    if(num_vertices(graph) == 0 || num_edges(graph) == 0)
+        throw std::runtime_error("Graph is empty");
+
+    printGraph();
+    findShortestPaths();
 }

@@ -9,6 +9,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
 #include <string>
+#include <list>
 
 using namespace boost;
 
@@ -37,15 +38,22 @@ class Girvan_Newman {
             Girvan_Newman(const std::string&);
             void printGraph();
             ////TO DO
-            void findShortestPaths();
+
+            //helper functions for findShortestPaths
+            int isIntersecting(bool*, bool*);
+            void BFS(std::list<Graph::vertex_descriptor>*, Graph::vertex_descriptor*, bool*);
+            void biDirSearch(Graph::vertex_descriptor&, Graph::vertex_descriptor&);
+
             //function to find all shortest paths <- use bidirectional search?
+            void findShortestPaths();
+
             //what should we return?
 
-            //function to calculate edge-betweenness
+            //function to calculate edge-betweenness: how many times is an edge used in a path
 
             //function to remove edges
-            //function to cluster?
-            //function for the algo itself and output results
+
+            void computeGroups();
 };
 
 

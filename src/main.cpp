@@ -11,8 +11,7 @@ int main(int argc, char **argv) {
 
     //Testing Girvan Newman Algorithm
     Girvan_Newman test(argv[1]);
-    test.findShortestPaths();
-//    test.printGraph();
+    test.computeGroups();
 
     return EXIT_SUCCESS;
 }
