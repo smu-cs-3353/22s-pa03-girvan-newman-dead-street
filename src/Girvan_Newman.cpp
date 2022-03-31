@@ -19,6 +19,7 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
     if(read.is_open()){
 
         dynamic_properties dp(ignore_other_properties);
+        dp.property("name", get(&VertexData::name, graph));
         dp.property("value", get(&VertexData::value, graph));
         read_graphml(read, graph, dp);
     }
@@ -36,7 +37,12 @@ void Girvan_Newman::printGraph(){
         std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
 
-        print_graph(graph, get(&VertexData::value, graph));
+//        for(auto ed: boost::make_iterator_range(boost::edges(graph))){
+//            std::cout << ed << " " << get(&VertexData::id, graph, boost::source(ed, graph)) << " -> "
+//                 << get(&VertexData::id, graph, boost::target(ed, graph)) << std::endl;
+//        }
+
+        print_graph(graph, get(&VertexData::name, graph));
     }
 }
 

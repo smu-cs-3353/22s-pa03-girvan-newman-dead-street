@@ -13,7 +13,7 @@
 using namespace boost;
 
 struct VertexData{
-    std::string id;
+    std::string name;
     long value;
 };
 
