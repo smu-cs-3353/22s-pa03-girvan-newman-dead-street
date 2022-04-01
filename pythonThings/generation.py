@@ -3,7 +3,9 @@
 
 import networkx as nx
 
+path = "data/"
+
 G = nx.random_partition_graph([32, 32, 32, 32, 32], .6, .2, directed=False)
-i = 0
-if i == 0:
-    i = 2
+nx.write_graphml(G, path+"randomGraph.graphml")
+
+# think this will work but I have no way to confirm or not since networkx decided to stop working
