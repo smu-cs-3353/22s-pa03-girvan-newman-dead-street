@@ -173,10 +173,25 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    //something to hold groups
-    //have to repeatedly call findShortestPaths & remove edges until the groups are found
-    //when is a good time to stop? When the edge betweeness is = 1 for each group?
-    printGraph();
+    //printGraph(); //for debugging purposes, it helps me see the vertices and edges
     std::vector<std::vector<Graph::vertex_descriptor>> paths;
     findShortestPaths(paths);
+
+    ////TO DO:
+    // what to use to represent groups?
+    // Girvan Newman: repeatedly call findShortestPaths, calculate edge betweenness, & remove edges
+    // until the groups/communities are found
+    // when is a good time to stop? When the edge betweeness is = 1 for each group?
+    // output groups/communities in a file, what kind?
+
+    /* How to remove an edge:
+     * reqs: 2 vertex_descriptors & the graph
+     * example:
+     *          vertex_descriptor rip = something;
+     *          vertex_descriptor sleep = something2; //The 2 vertex_descriptors are what's connected by the edge
+     *                                                //that you want to remove. Removing an edge will not remove
+     *                                                //the vertices.
+     *          remove_edge(rip, sleep, graph);
+     *
+     * Thanks for listening to my TED talk; I gtg touch some grass.*/
 }
