@@ -49,7 +49,6 @@ class Girvan_Newman {
             ////TO DO////
             void findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>&);
             //function to calculate edge-betweenness: how many times is an edge used in a path
-            //function to remove edges
             void computeGroups();
 };
 
