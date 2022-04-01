@@ -70,14 +70,18 @@ void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::verte
     Graph::vertex_descriptor current = queue->front();
     queue->pop_front();
 
-    for(auto adj: make_iterator_range(adjacent_vertices(current, graph))){
+    Graph::adjacency_iterator adj, adjEnd;
+    for(tie(adj, adjEnd) = adjacent_vertices(current, graph); adj != adjEnd; adj++){
 
-        if(!visited[adj]){
-
-            prev[adj] = current;
-            visited[adj] = true;
-            queue->push_back(adj);
-        }
+        int adjIndex = get(&VertexData::index, graph, *adj);
+        if(adjIndex > num_vertices(graph))
+            std::cout << "adj: " << *adj << " " << adjIndex << std::endl;
+//        if(!visited[adj]){
+//
+//            prev[adj] = current;
+//            visited[adj] = true;
+//            queue->push_back(adj);
+//        }
     }
 }
 
@@ -88,33 +92,41 @@ void Girvan_Newman::biDirSearch(Graph::vertex_descriptor& source, Graph::vertex_
     //keeps track of visited nodes
     bool s_visited[num_vertices(graph)], t_visited[num_vertices(graph)];
     Graph::vertex_descriptor s_prev[num_vertices(graph)], t_prev[num_vertices(graph)];
+
+    //initialize s_visited and t_visited
     for(int i = 0; i < num_vertices(graph); i++){
         s_visited[i] = false;
         t_visited[i] = false;
     }
 
+    int s_index = get(&VertexData::index, graph, source);
+    int t_index = get(&VertexData::index, graph, target);
+
     std::list<Graph::vertex_descriptor> s_queue, t_queue;
     s_queue.push_back(source);
-    s_visited[source] = true;
-    s_prev[source] = -1;    //vertex_descriptors are the vertex's index
+    s_visited[s_index] = true;
+    s_prev[s_index] = -1;
 
     t_queue.push_back(target);
-    std::cout << target << std::endl;
-    t_visited[target] = true; //segfault here, the index probably exceeds the arrays -> yep, so how do we constrain it?
-    t_prev[target] = -1;
+    t_visited[t_index] = true;
+    t_prev[t_index] = -1;
 
-    while(!s_queue.empty() && !t_queue.empty()){
+    std::cout << "s_index: " << s_index << "   t_index: " << t_index << std::endl;
 
-        BFS(&s_queue, s_prev, s_visited);
-        BFS(&t_queue, t_prev, t_visited);
-
-        int intersectNode = isIntersecting(s_visited, t_visited);
-
-        //If a path is found, store the path in a vector<vector>?
-        if(intersectNode != -1){
-            std::cout << "found a path" << std::endl;
-        }
-    }
+//    while(!s_queue.empty() && !t_queue.empty()){
+//
+//        BFS(&s_queue, s_prev, s_visited);
+//        BFS(&t_queue, t_prev, t_visited);
+//
+//        int intersectNode = isIntersecting(s_visited, t_visited);
+//
+//        //If a path is found, store the path in a vector<vector>?
+//        if(intersectNode != -1){
+//            std::cout << "found a path" << std::endl;
+//            //create a path of vertex descriptors; need descriptors so we can safely remove edges
+//            //return the paths
+//        }
+//    }
 }
 
 /* Uses a bidirectional search to generate the shortest paths for all nodes.
@@ -125,19 +137,20 @@ void Girvan_Newman::findShortestPaths(){
         throw std::runtime_error("Graph is empty");
 
     //iterate through all pairs and save the shortest paths
-    //avoid what has been visited previously
     for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
 
         Graph::vertex_descriptor s = *vp.first;
-//        std::cout << get(vertex_index_t, graph, s);
-        vp.first++;
 
-        if(vp.first != vp.second){
-            Graph::vertex_descriptor t = *vp.first;
-            std::cout << " " << *vp.first << std::endl;
-//            biDirSearch(s, t);
+        for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
+
+            if(vp2.first > vp.first){
+                Graph::vertex_descriptor t = *vp2.first;
+                biDirSearch(s, t);
+            }
         }
     }
+
+    //return the paths
 }
 
 //function for the algo itself and output results to a file
@@ -146,6 +159,9 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-//    printGraph();
+    //something to hold groups
+    //have to repeatedly call findShortestPaths & remove edges until the groups are found
+    //when is a good time to stop? When the edge betweeness is = 1 for each group?
+    printGraph();
     findShortestPaths();
 }
