@@ -16,6 +16,7 @@ using namespace boost;
 struct VertexData{
     std::string name;
     long value;
+    int index;
 };
 
 class Girvan_Newman {

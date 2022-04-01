@@ -23,14 +23,20 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         dynamic_properties dp(ignore_other_properties);
         dp.property("name", get(&VertexData::name, graph));
         dp.property("value", get(&VertexData::value, graph));
-
         read_graphml(read, graph, dp);
+
+        //initialize the vertices' indexes
+        int currentId = 0;
+        for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
+
+            graph[*vp.first].index = currentId++;
+        }
     }
     else
         throw std::runtime_error("Unable to read the input data file");
 }
 
-//Outputs the graph's vertices and edges by their names to the console
+//Outputs the graph's vertices and edges by their names to the console.
 void Girvan_Newman::printGraph(){
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
@@ -40,7 +46,7 @@ void Girvan_Newman::printGraph(){
         std::cout << "Graph: " << num_vertices(graph) << " vertices, " << num_edges(graph)
                   << " edges" << std::endl;
 
-//        print_graph(graph, get(&VertexData::name, graph));
+//        print_graph(graph, get(&VertexData::name, graph)); //prints the vertices and edges by their names
         print_graph(graph, std::cout); //prints the vertices and edges by their indexes
     }
 }
@@ -66,11 +72,11 @@ void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::verte
 
     for(auto adj: make_iterator_range(adjacent_vertices(current, graph))){
 
-        if(!visited[*adj.first]){
+        if(!visited[adj]){
 
-            prev[*adj.first] = current;
-            visited[*adj.first] = true;
-            queue->push_back();
+            prev[adj] = current;
+            visited[adj] = true;
+            queue->push_back(adj);
         }
     }
 }
@@ -90,10 +96,11 @@ void Girvan_Newman::biDirSearch(Graph::vertex_descriptor& source, Graph::vertex_
     std::list<Graph::vertex_descriptor> s_queue, t_queue;
     s_queue.push_back(source);
     s_visited[source] = true;
-    s_prev[source] = -1; //vertex_descriptors are the vertex's index
+    s_prev[source] = -1;    //vertex_descriptors are the vertex's index
 
     t_queue.push_back(target);
-    t_visited[target] = true;
+    std::cout << target << std::endl;
+    t_visited[target] = true; //segfault here, the index probably exceeds the arrays -> yep, so how do we constrain it?
     t_prev[target] = -1;
 
     while(!s_queue.empty() && !t_queue.empty()){
@@ -101,11 +108,11 @@ void Girvan_Newman::biDirSearch(Graph::vertex_descriptor& source, Graph::vertex_
         BFS(&s_queue, s_prev, s_visited);
         BFS(&t_queue, t_prev, t_visited);
 
-        int intersectNode = isIntersecting(s_visited, t_visiited);
+        int intersectNode = isIntersecting(s_visited, t_visited);
 
-        //If a path is found, store the path in a vector<vector>??
+        //If a path is found, store the path in a vector<vector>?
         if(intersectNode != -1){
-            //
+            std::cout << "found a path" << std::endl;
         }
     }
 }
@@ -117,7 +124,20 @@ void Girvan_Newman::findShortestPaths(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    //iterate through all pairs, avoid what has been visited previously
+    //iterate through all pairs and save the shortest paths
+    //avoid what has been visited previously
+    for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
+
+        Graph::vertex_descriptor s = *vp.first;
+//        std::cout << get(vertex_index_t, graph, s);
+        vp.first++;
+
+        if(vp.first != vp.second){
+            Graph::vertex_descriptor t = *vp.first;
+            std::cout << " " << *vp.first << std::endl;
+//            biDirSearch(s, t);
+        }
+    }
 }
 
 //function for the algo itself and output results to a file
@@ -126,6 +146,6 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    printGraph();
+//    printGraph();
     findShortestPaths();
 }
