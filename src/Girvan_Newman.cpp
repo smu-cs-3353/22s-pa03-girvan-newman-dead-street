@@ -50,8 +50,8 @@ void Girvan_Newman::printGraph(){
     }
 }
 
-/* Helper function for biDirSearch. Returns the index of the intersecting node if the forward and backward
- * searches have visited the same node.*/
+/* Helper function for biDirSearch. Returns the index of the intersecting node
+ * if the forward and backward searches have visited the same node.*/
 int Girvan_Newman::isIntersecting(bool* s_visit, bool* t_visit) {
 
     for(int i = 0; i < num_vertices(graph); i++){
@@ -62,7 +62,7 @@ int Girvan_Newman::isIntersecting(bool* s_visit, bool* t_visit) {
     return -1;
 }
 
-/* Helper function for biDirSearch. Finds the vertices adjacent to the source vertex*/
+/* Helper function for biDirSearch. Finds the vertices adjacent to the source vertex.*/
 void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::vertex_descriptor* prev,
                         bool* visited){
 
@@ -118,7 +118,7 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
 
         int intersectNode = isIntersecting(s_visited, t_visited);
 
-        if(intersectNode != -1){ //means a path between source and target exist
+        if(intersectNode != -1){ //means a path exists between source and target vertices
 
             //store the path as a vector
             std::vector<Graph::vertex_descriptor> path;
@@ -138,7 +138,7 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
                 i = get(&VertexData::index, graph, t_prev[i]);
             }
 
-            //add the path to paths
+            //add path to paths
             auto dupePath = std::find(paths.begin(), paths.end(), path);
             if(dupePath == paths.end())
                 paths.emplace_back(path);
@@ -146,7 +146,8 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
     }
 }
 
-/* Uses a bidirectional search to generate the shortest paths for all nodes.*/
+/* Uses a bidirectional search to generate the shortest paths for all nodes.
+ * pass a start vertex and end vertex?*/
 void Girvan_Newman::findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>& paths){
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
@@ -175,14 +176,24 @@ void Girvan_Newman::computeGroups(){
 
     //printGraph(); //for debugging purposes, it helps me see the vertices and edges
     std::vector<std::vector<Graph::vertex_descriptor>> paths;
-    findShortestPaths(paths);
+//    findShortestPaths(paths);
+
+    std::vector<std::vector<Graph::vertex_descriptor>> communities;
+
+    //initalize the vector containing the edge betweeness values
+    std::vector<std::pair<Graph::edge_descriptor, double>> edgeBetweenessValues;
+    for(auto ed: make_iterator_range(edges(graph))){
+        edgeBetweenessValues.emplace_back(ed, 0.0);
+        //use source(ed, graph) & target(ed, graph) to get the vertex descriptors
+    }
 
     ////TO DO:
-    // what to use to represent groups?
     // Girvan Newman: repeatedly call findShortestPaths, calculate edge betweenness, & remove edges
     // until the groups/communities are found
-    // when is a good time to stop? When the edge betweeness is = 1 for each group?
-    // output groups/communities in a file, what kind?
+    // when is a good time to stop? look more info on modularity, that's the metric
+    // https://www.youtube.com/watch?v=LtQoPEKKRYM <- girvan newman help
+    // edge betweeness: an edge descriptor & its value: (a, b) => degree of a/degree of b +
+    // output groups/communities in a file, what kind of file?
 
     /* How to remove an edge:
      * reqs: 2 vertex_descriptors & the graph
@@ -193,5 +204,8 @@ void Girvan_Newman::computeGroups(){
      *                                                //the vertices.
      *          remove_edge(rip, sleep, graph);
      *
-     * Thanks for listening to my TED talk; I gtg touch some grass.*/
+     * How to find an edge in the graph:
+     * reqs: same as ^
+     * example:
+     *          boost::edge(hm, huh, test).first; //Remember that an edge is a pair<vertex_descriptor, bool>*/
 }
