@@ -175,23 +175,84 @@ void Girvan_Newman::computeGroups(){
         throw std::runtime_error("Graph is empty");
 
     //printGraph(); //for debugging purposes, it helps me see the vertices and edges
-    std::vector<std::vector<Graph::vertex_descriptor>> paths;
-//    findShortestPaths(paths);
 
     std::vector<std::vector<Graph::vertex_descriptor>> communities;
+    std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
 
-    //initalize the vector containing the edge betweeness values
-    std::vector<std::pair<Graph::edge_descriptor, double>> edgeBetweenessValues;
+    //initalize the vector containing the edge betweenness values
     for(auto ed: make_iterator_range(edges(graph))){
-        edgeBetweenessValues.emplace_back(ed, 0.0);
-        //use source(ed, graph) & target(ed, graph) to get the vertex descriptors
+        edgesBetweenValues.emplace_back(ed, 0.0);
     }
+    int original_edges = edgesBetweenValues.size();
+
+    /* Calculate the metric/modularity. If -1 < modularity < 1, then the
+     * communities have been found. Otherwise, repeat the previous operations. */
+    double total_modularity;
+
+    //Girvan Newman Algorithm
+    do{
+        //use source(ed, graph) & target(ed, graph) to get the vertex descriptors
+
+        for(auto it: edgesBetweenValues){
+            std::cout << it.first << ": " << it.second << std::endl;
+        }
+
+        //generate the shortest paths and set the vertices' score
+        std::vector<std::vector<Graph::vertex_descriptor>> paths;
+        findShortestPaths(paths);
+
+        //
+
+        //calculate edge-betweeness
+
+        //find the edge(s) with the highest edge betweenness values
+        //could use <algorithm> to order the vector by the edge value
+        double max = edgesBetweenValues.at(0).second;
+        for(auto it: edgesBetweenValues){
+
+            if(it.second > max)
+                max = it.second;
+        }
+
+        //remove edges from graph and edgesBetweenValues
+        int i = 0;
+        for(auto it: edgesBetweenValues){
+
+            if(it.second == max){
+
+                Graph::vertex_descriptor v1 = source(it.first, graph);
+                Graph::vertex_descriptor v2 = target(it.first, graph);
+                remove_edge(v1, v2, graph);
+                break;
+            }
+            else{
+                i++;
+                it.second = 0;
+            }
+        }
+        edgesBetweenValues.erase(edgesBetweenValues.begin()+i);
+        paths.clear();
+
+        //calculate total_modularity
+        total_modularity--;
+    }while(total_modularity > 1);
+
+    std::cout << total_modularity << std::endl;
+
+    //generate all shortest paths
+    //calculate their edge betweeness, be sure to divide by 2 at the end since its undirected
+    //remove the edges with highest betweeness
+    //recalculate paths* and edge betweeness
+    //check if the -1 < total modularity < 1, which is the stopping point
 
     ////TO DO:
     // Girvan Newman: repeatedly call findShortestPaths, calculate edge betweenness, & remove edges
     // until the groups/communities are found
     // when is a good time to stop? look more info on modularity, that's the metric
-    // https://www.youtube.com/watch?v=LtQoPEKKRYM <- girvan newman help
+    // https://www.youtube.com/watch?v=LtQoPEKKRYM
+    // https://medium.com/analytics-vidhya/girvan-newman-the-clustering-technique-in-network-analysis-27fe6d665c92
+    // ^ links for girvan newman help
+
     // edge betweeness: an edge descriptor & its value: (a, b) => degree of a/degree of b +
     // output groups/communities in a file, what kind of file?
 

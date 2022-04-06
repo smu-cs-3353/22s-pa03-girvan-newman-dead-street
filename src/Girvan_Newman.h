@@ -26,28 +26,18 @@ class Girvan_Newman {
             typedef adjacency_list<vecS, vecS, undirectedS, VertexData> Graph;
             Graph graph;
 
-            /* for clarification on the parameters in <>:
-             * 1st boost::vecS = vertices are stored in a vector
-             * 2nd boost::vecS = edges are stored in a vector
-             * boost::undirectedS = means the graph is undirected
-             * boost::property<boost::vertex_name_t, std::string> = vertices have a string variable
-             *                                                      that represents their name
-             *
-             * Note: Can add two more parameters to define edges' and graph's properties.
-             * We can also redefine the vertices if the GraphML defines them differently
-             * */
-    public:
-            Girvan_Newman(const std::string&);
-            void printGraph();
-
-            //helper functions for findShortestPaths
             int isIntersecting(bool*, bool*);
             void BFS(std::list<Graph::vertex_descriptor>*, Graph::vertex_descriptor*, bool*);
             void biDirSearch(std::vector<std::vector<Graph::vertex_descriptor>>&,
                              Graph::vertex_descriptor&, Graph::vertex_descriptor&);
 
-            ////TO DO////
             void findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>&);
+
+    public:
+            Girvan_Newman(const std::string&);
+            void printGraph();
+
+    ////TO DO////
             //function to calculate edge-betweenness: how many times is an edge used in a path
             void computeGroups();
 };
