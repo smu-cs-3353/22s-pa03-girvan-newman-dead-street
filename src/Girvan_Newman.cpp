@@ -30,7 +30,6 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
 
             graph[*vp.first].index = currentId++;
-            graph[*vp.first].score = 0;
         }
     }
     else
@@ -169,6 +168,52 @@ void Girvan_Newman::findShortestPaths(std::vector<std::vector<Graph::vertex_desc
     }
 }
 
+/* Takes in a vector containing the shortest paths and a vector containing the edges.
+ * Calculates the edge betweeness centrality for each edge.*/
+void Girvan_Newman::calculateEdgeBetweeness(std::vector<std::vector<Graph::vertex_descriptor>>& paths,
+                             std::vector<std::pair<Graph::edge_descriptor, double>>& edgesBetweenValues){
+
+    //assigns edge weights based on the shortest paths
+    for(auto it: paths){
+
+        std::vector<Graph::vertex_descriptor> path = it;
+
+        auto it2 = path.begin();
+        auto source_vertex = *it2;
+        auto target_vertex = *(it2+1);
+        it2++;
+
+        //find each edge used in path
+        while(it2 != path.end()){
+
+            auto ed = edge(source_vertex, target_vertex, graph);
+            for(auto& ed_value: edgesBetweenValues){
+
+                bool check = source(ed.first, graph) == source(ed_value.first, graph);
+                bool check2 = target(ed.first, graph) == target(ed_value.first, graph);
+
+                if(check && check2){
+                    ed_value.second += 1.0;
+                    break;
+                }
+            }
+
+            auto temp = target_vertex;
+            target_vertex = *(it2+1);
+            source_vertex = temp;
+            it2++;
+        }
+    }
+
+    //calculate betweeness centrality for each edge
+    for(auto ed: edgesBetweenValues){
+        ed.second /= (double)paths.size();
+        std::cout << ed.second << std::endl;
+    }
+
+    ////TO DO sort edgesBetweenessValues in descending order by the double
+}
+
 //function for the algo itself and output results to a file
 void Girvan_Newman::computeGroups(){
 
@@ -179,34 +224,29 @@ void Girvan_Newman::computeGroups(){
 
     std::vector<std::vector<Graph::vertex_descriptor>> communities;
     std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
+    std::vector<std::vector<Graph::vertex_descriptor>> paths;
+    int original_edges = num_edges(graph); //used to calculate the modularity
 
-    //initalize the vector containing the edge betweenness values
+    //initalize the vector that will contain the edges and their betweenness value
     for(auto ed: make_iterator_range(edges(graph))){
-        edgesBetweenValues.emplace_back(ed, 0.0);
+        edgesBetweenValues.emplace_back(std::make_pair(ed, 0.0));
     }
-    int original_edges = edgesBetweenValues.size();
 
-    /* Calculate the metric/modularity. If -1 < modularity < 1, then the
-     * communities have been found. Otherwise, repeat the previous operations. */
-    double total_modularity;
+    /* The metric used to signal that communities have been found. If -1 < modularity < 1, then the
+     * algorithm will stop. Otherwise, continue to remove edges. */
+    double total_modularity = 0;
 
     //Girvan Newman Algorithm
     do{
         //use source(ed, graph) & target(ed, graph) to get the vertex descriptors
 
-        for(auto it: edgesBetweenValues){
-            std::cout << it.first << ": " << it.second << std::endl;
-        }
-
-        //generate the shortest paths and set the vertices' score
-        std::vector<std::vector<Graph::vertex_descriptor>> paths;
+        //generate the shortest paths
         findShortestPaths(paths);
 
-        //
+        //calculate edge betweenness
+        calculateEdgeBetweeness(paths, edgesBetweenValues);
 
-        //calculate edge-betweeness
-
-        //find the edge(s) with the highest edge betweenness values
+        //Find the edge(s) with the highest edge betweenness values
         //could use <algorithm> to order the vector by the edge value
         double max = edgesBetweenValues.at(0).second;
         for(auto it: edgesBetweenValues){
@@ -238,7 +278,7 @@ void Girvan_Newman::computeGroups(){
         total_modularity--;
     }while(total_modularity > 1);
 
-    std::cout << total_modularity << std::endl;
+    std::cout << "Modularity = " << total_modularity << std::endl;
 
     //generate all shortest paths
     //calculate their edge betweeness, be sure to divide by 2 at the end since its undirected
