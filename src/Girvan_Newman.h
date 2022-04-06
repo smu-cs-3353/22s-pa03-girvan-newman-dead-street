@@ -18,6 +18,7 @@ struct VertexData{
     std::string name;
     long value;
     int index;
+    int score;
 };
 
 class Girvan_Newman {

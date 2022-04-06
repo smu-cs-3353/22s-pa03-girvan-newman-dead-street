@@ -30,6 +30,7 @@ Girvan_Newman::Girvan_Newman(const std::string& file){
         for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
 
             graph[*vp.first].index = currentId++;
+            graph[*vp.first].score = 0;
         }
     }
     else
@@ -123,7 +124,7 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
             //store the path as a vector
             std::vector<Graph::vertex_descriptor> path;
             int i = intersectNode;
-            if(i == s_index)
+            if (i == s_index)
                 path.emplace_back(source);
 
             while(i != s_index){
