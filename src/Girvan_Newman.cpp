@@ -123,6 +123,7 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
             //store the path as a vector
             std::vector<Graph::vertex_descriptor> path;
             int i = intersectNode;
+
             if (i == s_index)
                 path.emplace_back(source);
 
@@ -158,11 +159,16 @@ void Girvan_Newman::findShortestPaths(std::vector<std::vector<Graph::vertex_desc
 
         Graph::vertex_descriptor s = *vp.first;
 
-        for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
+        if(degree(s, graph) != 0){
 
-            if(vp2.first > vp.first){
-                Graph::vertex_descriptor t = *vp2.first;
-                biDirSearch(paths,s, t);
+            for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
+
+                if(vp2.first > vp.first){
+                    Graph::vertex_descriptor t = *vp2.first;
+
+                    if(degree(t, graph) != 0)
+                        biDirSearch(paths,s, t);
+                }
             }
         }
     }
@@ -230,25 +236,25 @@ void Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_de
             if(vp2.first != vp.first){
                 Graph::vertex_descriptor t = *vp2.first;
 
-                double degree_s = degree(s, graph);
-                double degree_t = degree(t, graph);
+                double degree_s_t = degree(s, graph) * degree(t, graph);
 
-                int nodeA = 0;
+                double nodeA = 0.0;
                 if(edge(s, t, graph).second) //if the vertices are directly connected
-                    nodeA = 1;
+                    nodeA = 1.0;
                 else{
 
-                    //if a path between the vertices exist, nodeA = number of edges between
+                    //if a path between the vertices exist, nodeA = number of edges in-between
                     for(auto& path: paths){
 
                         if(path.front() == s && path.back() == t){
-                            if(path.size() < nodeA)
-                                nodeA = path.size();
+                            nodeA = path.size()-1;
+                            break;
                         }
                     }
                 }
 
-                sum += nodeA - ( (degree_s * degree_t) / (2.0 * original_edges));
+                sum += nodeA - (degree_s_t / (2.0 * original_edges));
+                //sum gets bigger with every edge removed, despite paths & num_edges getting smaller
             }
         }
     }
@@ -262,39 +268,28 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    printGraph(); //for debugging purposes, it helps me see the vertices and edges
+//    printGraph(); //for debugging purposes, it helps me see the vertices and edges
 
     std::vector<std::vector<Graph::vertex_descriptor>> communities;
     std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
     std::vector<std::vector<Graph::vertex_descriptor>> paths;
 
     int original_edges = num_edges(graph); //used to calculate the modularity
-    double normalizing_cost = 1.0 / (2.0*original_edges);
+    double normalizing_cost = 1.0 / (4.0*original_edges);
 
     //initalize the vector that will contain the edges and their betweenness value
     for(auto ed: make_iterator_range(edges(graph))){
         edgesBetweenValues.emplace_back(std::make_pair(ed, 0.0));
     }
 
-    /* The metric used to signal that communities have been found. If -1 < modularity < 1, then the
-     * algorithm will stop. Otherwise, continue to remove edges. */
+    /* The metric used to signal that communities have been found. If total_modularity < 0.7, then
+     * the algorithm will stop. Otherwise, continue to remove edges. */
     double total_modularity = 0;
 
     //Girvan Newman Algorithm
     do{
-        //generate the shortest paths
+        // generate the shortest paths
         findShortestPaths(paths);
-
-        for(auto path: paths){
-
-            std::vector<Graph::vertex_descriptor> it = path;
-            auto p = it.begin();
-            while(p != it.end()){
-                std::cout << *p << " ";
-                p++;
-            }
-            std::cout << std::endl << std::endl;
-        }
 
         //calculate edge betweenness
         calculateEdgeBetweeness(paths, edgesBetweenValues);
@@ -314,59 +309,27 @@ void Girvan_Newman::computeGroups(){
                 break;
         }
 
+        std::cout  << num_edges(graph) << " " << paths.size() << std::endl;
+
         //calculate total_modularity
-        double sum = 0.0;
-        for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
+        calculateModularity(paths, total_modularity, normalizing_cost, original_edges);
 
-            Graph::vertex_descriptor s = *vp.first;
-
-            for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
-
-                if(vp2.first != vp.first){
-                    Graph::vertex_descriptor t = *vp2.first;
-
-                    double degree_s = degree(s, graph);
-                    double degree_t = degree(t, graph);
-
-                    int nodeA = 0;
-                    if(edge(s, t, graph).second) //if the vertices are directly connected
-                        nodeA = 1;
-                    else{
-
-                        //if a path between the vertices exist, nodeA = number of edges between
-                        for(auto& path: paths){
-
-                            if(path.front() == s && path.back() == t){
-                                if(path.size() < nodeA)
-                                    nodeA = path.size();
-                            }
-                        }
-                    }
-
-                    std::cout << sum << " += " << nodeA << " - ( " << degree_s << " * " << degree_t << ") / "
-                              << ((2.0 * original_edges)) << std::endl;
-
-                    sum += nodeA - ( (degree_s * degree_t) / (2.0 * original_edges));
-                }
-            }
+        //reset paths and edgesBetweenValues
+        for(auto& ed: edgesBetweenValues){
+            ed.second = 0.0;
         }
-
-        total_modularity = normalizing_cost * sum;
-        calculateModularity(paths, modularity, normalizing_cost, original_edges);
         paths.clear();
-        std::cout << "Modularity = " << normalizing_cost << " * " << sum << " = " << total_modularity << std::endl;
+
+        std::cout << "Modularity = " << total_modularity << std::endl;
+        total_modularity = 0;
     }while(total_modularity > 0.7);
 
     //fill in the communities & output it to a file
 
-    ////TO DO:
-    //https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1482622/ <-- for the modularity
+    // https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1482622/ <-- for the modularity
     // https://www.youtube.com/watch?v=LtQoPEKKRYM
     // https://medium.com/analytics-vidhya/girvan-newman-the-clustering-technique-in-network-analysis-27fe6d665c92
     // ^ links for girvan newman help
-
-    // edge betweeness: an edge descriptor & its value: (a, b) => degree of a/degree of b +
-    // output groups/communities in a file, what kind of file?
 
     /* How to remove an edge:
      * reqs: 2 vertex_descriptors & the graph
