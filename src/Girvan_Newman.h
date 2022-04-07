@@ -30,13 +30,15 @@ class Girvan_Newman {
 
             void BFS(std::list<Graph::vertex_descriptor>*, Graph::vertex_descriptor*, bool*);
 
-            void biDirSearch(std::vector<std::vector<Graph::vertex_descriptor>>&,
+            void biDirSearch(std::vector<std::pair<Graph::edge_descriptor, double>>&,
+                             std::vector<std::vector<Graph::vertex_descriptor>>&,
                              Graph::vertex_descriptor&, Graph::vertex_descriptor&);
 
-            void findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>&);
+            void findShortestPaths(std::vector<std::pair<Graph::edge_descriptor, double>>&,
+                                   std::vector<std::vector<Graph::vertex_descriptor>>&);
 
-            void calculateEdgeBetweeness(std::vector<std::vector<Graph::vertex_descriptor>>&,
-                                         std::vector<std::pair<Graph::edge_descriptor, double>>&);
+            void setEdgeBetweeness(std::vector<Graph::vertex_descriptor>&,
+                                   std::vector<std::pair<Graph::edge_descriptor, double>>&);
 
             void calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>&,
                                      double&, double&, int&);

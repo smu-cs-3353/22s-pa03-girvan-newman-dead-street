@@ -85,7 +85,8 @@ void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::verte
 
 /* Searches from the source and target vertices to generate their shortest paths.
  * Referenced from GeeksforGeeks: https://www.geeksforgeeks.org/bidirectional-search/ */
-void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor>>& paths,
+void Girvan_Newman::biDirSearch(std::vector<std::pair<Graph::edge_descriptor, double>>& edgeValues,
+                                std::vector<std::vector<Graph::vertex_descriptor>>& paths,
                                 Graph::vertex_descriptor& source, Graph::vertex_descriptor& target){
 
     //keeps track of visited nodes
@@ -141,84 +142,74 @@ void Girvan_Newman::biDirSearch(std::vector<std::vector<Graph::vertex_descriptor
 
             //add path to paths
             auto dupePath = std::find(paths.begin(), paths.end(), path);
-            if(dupePath == paths.end())
+            if(dupePath == paths.end()){
+                setEdgeBetweeness(path, edgeValues);
                 paths.emplace_back(path);
+            }
         }
     }
 }
 
 /* Uses a bidirectional search to generate the shortest paths for all nodes.
  * pass a start vertex and end vertex?*/
-void Girvan_Newman::findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>& paths){
+void Girvan_Newman::findShortestPaths(std::vector<std::pair<Graph::edge_descriptor, double>>& edgeValues,
+                                      std::vector<std::vector<Graph::vertex_descriptor>>& paths){
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
+    else{
 
-    //iterate through all pairs and save the shortest paths
-    for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
+        //iterate through all pairs and save the shortest paths
+        for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
 
-        Graph::vertex_descriptor s = *vp.first;
+            Graph::vertex_descriptor s = *vp.first;
 
-        if(degree(s, graph) != 0){
+            if(degree(s, graph) != 0){
 
-            for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
+                for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
 
-                if(vp2.first > vp.first){
-                    Graph::vertex_descriptor t = *vp2.first;
+                    if(vp2.first > vp.first){
+                        Graph::vertex_descriptor t = *vp2.first;
 
-                    if(degree(t, graph) != 0)
-                        biDirSearch(paths,s, t);
+                        if(degree(t, graph) != 0)
+                            biDirSearch(edgeValues, paths,s, t);
+                    }
                 }
             }
         }
     }
 }
 
-/* Takes in a vector containing the shortest paths and a vector containing the edges.
- * Calculates the edge betweeness centrality for each edge.*/
-void Girvan_Newman::calculateEdgeBetweeness(std::vector<std::vector<Graph::vertex_descriptor>>& paths,
-                             std::vector<std::pair<Graph::edge_descriptor, double>>& edgesBetweenValues){
+/* Takes in a vector containing the shortest path and a vector containing the edges.
+ * Assigns edge weights for each edge used in the path.*/
+void Girvan_Newman::setEdgeBetweeness(std::vector<Graph::vertex_descriptor>& path,
+                                      std::vector<std::pair<Graph::edge_descriptor, double>>& edgesBetweenValues){
 
-    //assigns edge weights based on the shortest paths
-    for(auto it: paths){
+    auto pathIter = path.begin();
+    auto source_vertex = *pathIter;
+    auto target_vertex = *(pathIter + 1);
+    pathIter++;
 
-        std::vector<Graph::vertex_descriptor> path = it;
-        auto it2 = path.begin();
-        auto source_vertex = *it2;
-        auto target_vertex = *(it2+1);
-        it2++;
+    //find each edge used in path
+    while(pathIter != path.end()){
 
-        //find each edge used in path
-        while(it2 != path.end()){
+        auto ed = edge(source_vertex, target_vertex, graph);
+        for(auto& ed_value: edgesBetweenValues){
 
-            auto ed = edge(source_vertex, target_vertex, graph);
-            for(auto& ed_value: edgesBetweenValues){
+            bool check = source(ed.first, graph) == source(ed_value.first, graph);
+            bool check2 = target(ed.first, graph) == target(ed_value.first, graph);
 
-                bool check = source(ed.first, graph) == source(ed_value.first, graph);
-                bool check2 = target(ed.first, graph) == target(ed_value.first, graph);
-
-                if(check && check2){
-                    ed_value.second += 1.0;
-                    break;
-                }
+            if(check && check2){
+                ed_value.second += 1.0;
+                break;
             }
-
-            auto temp = target_vertex;
-            target_vertex = *(it2+1);
-            source_vertex = temp;
-            it2++;
         }
-    }
 
-    //calculate betweeness centrality for each edge
-    for(auto ed: edgesBetweenValues){
-        ed.second /= (double)paths.size();
+        auto temp = target_vertex;
+        target_vertex = *(pathIter + 1);
+        source_vertex = temp;
+        pathIter++;
     }
-
-    //Sorts edgesBetweenessValues in descending order by the double
-    std::sort(edgesBetweenValues.begin(), edgesBetweenValues.end(), [](auto& left, auto& right){
-        return left.second > right.second;
-    });
 }
 
 //Calculates the total modularity from the passed arguments.
@@ -233,33 +224,38 @@ void Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_de
 
         for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
 
-            if(vp2.first != vp.first){
-                Graph::vertex_descriptor t = *vp2.first;
+            Graph::vertex_descriptor t = *vp2.first;
 
-                double degree_s_t = degree(s, graph) * degree(t, graph);
+            double degree_s_t = degree(s, graph) * degree(t, graph);
 
-                double nodeA = 0.0;
-                if(edge(s, t, graph).second) //if the vertices are directly connected
-                    nodeA = 1.0;
-                else{
+            double nodeA = 0.0;
+            if(edge(s, t, graph).second) //if the vertices are directly connected
+                nodeA = 1.0;
+            else if(s == t)
+                continue;
+            else{
 
-                    //if a path between the vertices exist, nodeA = number of edges in-between
-                    for(auto& path: paths){
+                //if a path between the vertices exist, nodeA = number of edges in-between
+                for(auto& path: paths){
 
-                        if(path.front() == s && path.back() == t){
-                            nodeA = path.size()-1;
-                            break;
-                        }
+                    if(path.front() == s && path.back() == t){
+                        nodeA = path.size()-1;
+                        break;
                     }
                 }
-
-                sum += nodeA - (degree_s_t / (2.0 * original_edges));
-                //sum gets bigger with every edge removed, despite paths & num_edges getting smaller
             }
+
+            if(nodeA == 0)
+                sum += 0;
+            else
+                sum += (nodeA - (degree_s_t / (2.0 * original_edges)));
+            //Is there a way to determine if the vertices are in the same community?
+            //^ see https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
         }
     }
 
     modularity = normalizing_cost * sum;
+    //^ sum seems to increase with every edge removed, making modularity increase instead of decreasing
 }
 
 //function for the algo itself and output results to a file
@@ -274,13 +270,16 @@ void Girvan_Newman::computeGroups(){
     std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
     std::vector<std::vector<Graph::vertex_descriptor>> paths;
 
-    int original_edges = num_edges(graph); //used to calculate the modularity
-    double normalizing_cost = 1.0 / (4.0*original_edges);
-
-    //initalize the vector that will contain the edges and their betweenness value
+    // initalize the vector that will contain the edges and their betweenness value
     for(auto ed: make_iterator_range(edges(graph))){
         edgesBetweenValues.emplace_back(std::make_pair(ed, 0.0));
     }
+
+    // generate all the shortest paths & calculate edge betweeness
+    findShortestPaths(edgesBetweenValues, paths);
+
+    int original_edges = num_edges(graph); //used to calculate the modularity
+    double normalizing_cost = 1.0 / (4.0*original_edges);
 
     /* The metric used to signal that communities have been found. If total_modularity < 0.7, then
      * the algorithm will stop. Otherwise, continue to remove edges. */
@@ -288,11 +287,16 @@ void Girvan_Newman::computeGroups(){
 
     //Girvan Newman Algorithm
     do{
-        // generate the shortest paths
-        findShortestPaths(paths);
 
-        //calculate edge betweenness
-        calculateEdgeBetweeness(paths, edgesBetweenValues);
+        // Calculate betweeness centrality for each edge
+        for(auto ed: edgesBetweenValues){
+            ed.second /= (double)paths.size();
+        }
+
+        //Sort edgesBetweenessValues in descending order by edge betweeness value
+        std::sort(edgesBetweenValues.begin(), edgesBetweenValues.end(), [](auto& left, auto& right){
+            return left.second > right.second;
+        });
 
         // Find and remove the edge(s) with the highest edge
         // betweenness value from the graph
@@ -309,19 +313,17 @@ void Girvan_Newman::computeGroups(){
                 break;
         }
 
-        std::cout  << num_edges(graph) << " " << paths.size() << std::endl;
-
-        //calculate total_modularity
-        calculateModularity(paths, total_modularity, normalizing_cost, original_edges);
-
-        //reset paths and edgesBetweenValues
+        //update paths and edgesBetweenValues
         for(auto& ed: edgesBetweenValues){
             ed.second = 0.0;
         }
         paths.clear();
+        findShortestPaths(edgesBetweenValues, paths);
+
+        //calculate total_modularity
+        calculateModularity(paths, total_modularity, normalizing_cost, original_edges);
 
         std::cout << "Modularity = " << total_modularity << std::endl;
-        total_modularity = 0;
     }while(total_modularity > 0.7);
 
     //fill in the communities & output it to a file
