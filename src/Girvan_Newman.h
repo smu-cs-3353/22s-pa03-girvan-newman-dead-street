@@ -27,13 +27,19 @@ class Girvan_Newman {
             Graph graph;
 
             int isIntersecting(bool*, bool*);
+
             void BFS(std::list<Graph::vertex_descriptor>*, Graph::vertex_descriptor*, bool*);
+
             void biDirSearch(std::vector<std::vector<Graph::vertex_descriptor>>&,
                              Graph::vertex_descriptor&, Graph::vertex_descriptor&);
 
             void findShortestPaths(std::vector<std::vector<Graph::vertex_descriptor>>&);
+
             void calculateEdgeBetweeness(std::vector<std::vector<Graph::vertex_descriptor>>&,
                                          std::vector<std::pair<Graph::edge_descriptor, double>>&);
+
+            void calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>&,
+                                     double&, double&, int&);
     public:
             Girvan_Newman(const std::string&);
             void printGraph();
