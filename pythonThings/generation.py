@@ -5,7 +5,7 @@ import networkx as nx
 
 path = "data/"
 
-G = nx.random_partition_graph([32, 32, 32, 32, 32], .6, .2, directed=False)
+G = nx.relaxed_caveman_graph(3, 4, 0.35)
 nx.write_graphml(G, path+"randomGraph.graphml")
 
 # think this will work but I have no way to confirm or not since networkx decided to stop working
