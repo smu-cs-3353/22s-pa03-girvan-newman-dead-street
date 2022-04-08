@@ -91,7 +91,8 @@ void Girvan_Newman::biDirSearch(std::vector<std::pair<Graph::edge_descriptor, do
 
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
-    else if(edge(source, target, graph).second){
+
+    else if(edge(source, target, graph).second){ //if an edge between source and target exist
 
         //store the path as a vector
         std::vector<Graph::vertex_descriptor> path;
@@ -170,8 +171,7 @@ void Girvan_Newman::biDirSearch(std::vector<std::pair<Graph::edge_descriptor, do
     }
 }
 
-/* Uses a bidirectional search to generate the shortest paths for all nodes.
- * pass a start vertex and end vertex?*/
+/* Uses a bidirectional search to generate the shortest paths for all nodes. */
 void Girvan_Newman::findShortestPaths(std::vector<std::pair<Graph::edge_descriptor, double>>& edgeValues,
                                       std::vector<std::vector<Graph::vertex_descriptor>>& paths){
 
@@ -284,7 +284,7 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-    printGraph(); //for debugging purposes, it helps me see the vertices and edges
+//    printGraph(); //for debugging purposes, it helps me see the vertices and edges
 
     std::vector<std::vector<Graph::vertex_descriptor>> communities;
     std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
@@ -298,17 +298,6 @@ void Girvan_Newman::computeGroups(){
     // generate all the shortest paths & calculate edge betweeness
     findShortestPaths(edgesBetweenValues, paths);
 
-    std::cout << paths.size() << std::endl;
-    for(auto path: paths){
-
-        auto p = path.begin();
-        while(p != path.end()){
-            std::cout << *p << " ";
-            p++;
-        }
-        std::cout << std::endl;
-    }
-
     int original_edges = num_edges(graph); //used to calculate the modularity
     double normalizing_cost = 1.0 / (4.0*original_edges);
 
@@ -319,6 +308,7 @@ void Girvan_Newman::computeGroups(){
     //Girvan Newman Algorithm
     do{
 
+        std::cout << "Edges: " << num_edges(graph) << " ... Paths: " << paths.size() << std::endl;
         // Calculate betweeness centrality for each edge
         for(auto ed: edgesBetweenValues){
             ed.second /= (double)paths.size();
@@ -356,6 +346,8 @@ void Girvan_Newman::computeGroups(){
 
         std::cout << "Modularity = " << total_modularity << std::endl;
     }while(total_modularity > 0.7);
+
+    std::cout << "Communities have been found!" << std::endl;
 
     //fill in the communities & output it to a file
 
