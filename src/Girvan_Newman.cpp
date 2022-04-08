@@ -83,68 +83,88 @@ void Girvan_Newman::BFS(std::list<Graph::vertex_descriptor>* queue, Graph::verte
     }
 }
 
-/* Searches from the source and target vertices to generate their shortest paths.
+/* Searches from the source and target vertices to generate their shortest path.
  * Referenced from GeeksforGeeks: https://www.geeksforgeeks.org/bidirectional-search/ */
 void Girvan_Newman::biDirSearch(std::vector<std::pair<Graph::edge_descriptor, double>>& edgeValues,
                                 std::vector<std::vector<Graph::vertex_descriptor>>& paths,
                                 Graph::vertex_descriptor& source, Graph::vertex_descriptor& target){
 
-    //keeps track of visited nodes
-    bool s_visited[num_vertices(graph)], t_visited[num_vertices(graph)];
-    Graph::vertex_descriptor s_prev[num_vertices(graph)], t_prev[num_vertices(graph)];
+    if(num_vertices(graph) == 0 || num_edges(graph) == 0)
+        throw std::runtime_error("Graph is empty");
+    else if(edge(source, target, graph).second){
 
-    //initialize s_visited and t_visited
-    for(int i = 0; i < num_vertices(graph); i++){
-        s_visited[i] = false;
-        t_visited[i] = false;
+        //store the path as a vector
+        std::vector<Graph::vertex_descriptor> path;
+        path.emplace_back(source);
+        path.emplace_back(target);
+
+        //add path to paths
+        auto dupePath = std::find(paths.begin(), paths.end(), path);
+        if(dupePath == paths.end()){
+            setEdgeBetweeness(path, edgeValues);
+            paths.emplace_back(path);
+        }
     }
+    else{
 
-    int s_index = get(&VertexData::index, graph, source);
-    int t_index = get(&VertexData::index, graph, target);
+        //keeps track of visited nodes
+        bool s_visited[num_vertices(graph)], t_visited[num_vertices(graph)];
+        Graph::vertex_descriptor s_prev[num_vertices(graph)], t_prev[num_vertices(graph)];
 
-    //initialize the forward and backward searches s_queue and t_queue
-    std::list<Graph::vertex_descriptor> s_queue, t_queue;
-    s_queue.push_back(source);
-    s_visited[s_index] = true;
-    s_prev[s_index] = -1;
+        //initialize s_visited and t_visited
+        for(int i = 0; i < num_vertices(graph); i++){
+            s_visited[i] = false;
+            t_visited[i] = false;
+        }
 
-    t_queue.push_back(target);
-    t_visited[t_index] = true;
-    t_prev[t_index] = -1;
+        int s_index = get(&VertexData::index, graph, source);
+        int t_index = get(&VertexData::index, graph, target);
 
-    while(!s_queue.empty() && !t_queue.empty()){
+        //initialize the forward and backward searches s_queue and t_queue
+        std::list<Graph::vertex_descriptor> s_queue, t_queue;
+        s_queue.push_back(source);
+        s_visited[s_index] = true;
+        s_prev[s_index] = -1;
 
-        BFS(&s_queue, s_prev, s_visited);
-        BFS(&t_queue, t_prev, t_visited);
+        t_queue.push_back(target);
+        t_visited[t_index] = true;
+        t_prev[t_index] = -1;
 
-        int intersectNode = isIntersecting(s_visited, t_visited);
+        while(!s_queue.empty() && !t_queue.empty()){
 
-        if(intersectNode != -1){ //means a path exists between source and target vertices
+            BFS(&s_queue, s_prev, s_visited);
+            BFS(&t_queue, t_prev, t_visited);
 
-            //store the path as a vector
-            std::vector<Graph::vertex_descriptor> path;
-            int i = intersectNode;
+            int intersectNode = isIntersecting(s_visited, t_visited);
 
-            if (i == s_index)
-                path.emplace_back(source);
+            if(intersectNode != -1){ //means a path exists between source and target vertices
 
-            while(i != s_index){
-                path.emplace_back(s_prev[i]);
-                i = get(&VertexData::index, graph, s_prev[i]);
-            }
-            std::reverse(path.begin(), path.end());
+                //store the path as a vector
+                std::vector<Graph::vertex_descriptor> path;
+                int i = intersectNode;
 
-            i = intersectNode;
-            while(i != t_index){
-                path.emplace_back(t_prev[i]);
-                i = get(&VertexData::index, graph, t_prev[i]);
-            }
+                if (i == s_index)
+                    path.emplace_back(source);
 
-            //add path to paths
-            auto dupePath = std::find(paths.begin(), paths.end(), path);
-            if(dupePath == paths.end()){
-                setEdgeBetweeness(path, edgeValues);
-                paths.emplace_back(path);
+                while(i != s_index){
+                    path.emplace_back(s_prev[i]);
+                    i = get(&VertexData::index, graph, s_prev[i]);
+                }
+                std::reverse(path.begin(), path.end());
+
+                i = intersectNode;
+                while(i != t_index){
+                    path.emplace_back(t_prev[i]);
+                    i = get(&VertexData::index, graph, t_prev[i]);
+                }
+
+                //add path to paths
+                auto dupePath = std::find(paths.begin(), paths.end(), path);
+                if(dupePath == paths.end()){
+                    setEdgeBetweeness(path, edgeValues);
+                    paths.emplace_back(path);
+                    break;
+                }
             }
         }
     }
@@ -264,7 +284,7 @@ void Girvan_Newman::computeGroups(){
     if(num_vertices(graph) == 0 || num_edges(graph) == 0)
         throw std::runtime_error("Graph is empty");
 
-//    printGraph(); //for debugging purposes, it helps me see the vertices and edges
+    printGraph(); //for debugging purposes, it helps me see the vertices and edges
 
     std::vector<std::vector<Graph::vertex_descriptor>> communities;
     std::vector<std::pair<Graph::edge_descriptor, double>> edgesBetweenValues;
@@ -277,6 +297,17 @@ void Girvan_Newman::computeGroups(){
 
     // generate all the shortest paths & calculate edge betweeness
     findShortestPaths(edgesBetweenValues, paths);
+
+    std::cout << paths.size() << std::endl;
+    for(auto path: paths){
+
+        auto p = path.begin();
+        while(p != path.end()){
+            std::cout << *p << " ";
+            p++;
+        }
+        std::cout << std::endl;
+    }
 
     int original_edges = num_edges(graph); //used to calculate the modularity
     double normalizing_cost = 1.0 / (4.0*original_edges);
