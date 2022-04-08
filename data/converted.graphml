@@ -1,348 +1,465 @@
 <?xml version='1.0' encoding='utf-8'?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d0" for="node" attr.name="value" attr.type="long"/>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="name" for="node" attr.name="name" attr.type="string"/>
+  <key id="d0" for="node" attr.name="value" attr.type="long"/>
 <graph edgedefault="undirected"><node id="BrighamYoung">
+  <data key="name">BrighamYoung</data>
   <data key="d0">7</data>
 </node>
 <node id="FloridaState">
+  <data key="name">FloridaState</data>
   <data key="d0">0</data>
 </node>
 <node id="Iowa">
+  <data key="name">Iowa</data>
   <data key="d0">2</data>
 </node>
 <node id="KansasState">
+  <data key="name">KansasState</data>
   <data key="d0">3</data>
 </node>
 <node id="NewMexico">
+  <data key="name">NewMexico</data>
   <data key="d0">7</data>
 </node>
 <node id="TexasTech">
+  <data key="name">TexasTech</data>
   <data key="d0">3</data>
 </node>
 <node id="PennState">
+  <data key="name">PennState</data>
   <data key="d0">2</data>
 </node>
 <node id="SouthernCalifornia">
+  <data key="name">SouthernCalifornia</data>
   <data key="d0">8</data>
 </node>
 <node id="ArizonaState">
+  <data key="name">ArizonaState</data>
   <data key="d0">8</data>
 </node>
 <node id="SanDiegoState">
+  <data key="name">SanDiegoState</data>
   <data key="d0">7</data>
 </node>
 <node id="Baylor">
+  <data key="name">Baylor</data>
   <data key="d0">3</data>
 </node>
 <node id="NorthTexas">
+  <data key="name">NorthTexas</data>
   <data key="d0">10</data>
 </node>
 <node id="NorthernIllinois">
+  <data key="name">NorthernIllinois</data>
   <data key="d0">6</data>
 </node>
 <node id="Northwestern">
+  <data key="name">Northwestern</data>
   <data key="d0">2</data>
 </node>
 <node id="WesternMichigan">
+  <data key="name">WesternMichigan</data>
   <data key="d0">6</data>
 </node>
 <node id="Wisconsin">
+  <data key="name">Wisconsin</data>
   <data key="d0">2</data>
 </node>
 <node id="Wyoming">
+  <data key="name">Wyoming</data>
   <data key="d0">7</data>
 </node>
 <node id="Auburn">
+  <data key="name">Auburn</data>
   <data key="d0">9</data>
 </node>
 <node id="Akron">
+  <data key="name">Akron</data>
   <data key="d0">6</data>
 </node>
 <node id="VirginiaTech">
+  <data key="name">VirginiaTech</data>
   <data key="d0">1</data>
 </node>
 <node id="Alabama">
+  <data key="name">Alabama</data>
   <data key="d0">9</data>
 </node>
 <node id="UCLA">
+  <data key="name">UCLA</data>
   <data key="d0">8</data>
 </node>
 <node id="Arizona">
+  <data key="name">Arizona</data>
   <data key="d0">8</data>
 </node>
 <node id="Utah">
+  <data key="name">Utah</data>
   <data key="d0">7</data>
 </node>
 <node id="ArkansasState">
+  <data key="name">ArkansasState</data>
   <data key="d0">10</data>
 </node>
 <node id="NorthCarolinaState">
+  <data key="name">NorthCarolinaState</data>
   <data key="d0">0</data>
 </node>
 <node id="BallState">
+  <data key="name">BallState</data>
   <data key="d0">6</data>
 </node>
 <node id="Florida">
+  <data key="name">Florida</data>
   <data key="d0">9</data>
 </node>
 <node id="BoiseState">
+  <data key="name">BoiseState</data>
   <data key="d0">11</data>
 </node>
 <node id="BostonCollege">
+  <data key="name">BostonCollege</data>
   <data key="d0">1</data>
 </node>
 <node id="WestVirginia">
+  <data key="name">WestVirginia</data>
   <data key="d0">1</data>
 </node>
 <node id="BowlingGreenState">
+  <data key="name">BowlingGreenState</data>
   <data key="d0">6</data>
 </node>
 <node id="Michigan">
+  <data key="name">Michigan</data>
   <data key="d0">2</data>
 </node>
 <node id="Virginia">
+  <data key="name">Virginia</data>
   <data key="d0">0</data>
 </node>
 <node id="Buffalo">
+  <data key="name">Buffalo</data>
   <data key="d0">6</data>
 </node>
 <node id="Syracuse">
+  <data key="name">Syracuse</data>
   <data key="d0">1</data>
 </node>
 <node id="CentralFlorida">
+  <data key="name">CentralFlorida</data>
   <data key="d0">5</data>
 </node>
 <node id="GeorgiaTech">
+  <data key="name">GeorgiaTech</data>
   <data key="d0">0</data>
 </node>
 <node id="CentralMichigan">
+  <data key="name">CentralMichigan</data>
   <data key="d0">6</data>
 </node>
 <node id="Purdue">
+  <data key="name">Purdue</data>
   <data key="d0">2</data>
 </node>
 <node id="Colorado">
+  <data key="name">Colorado</data>
   <data key="d0">3</data>
 </node>
 <node id="ColoradoState">
+  <data key="name">ColoradoState</data>
   <data key="d0">7</data>
 </node>
 <node id="Connecticut">
+  <data key="name">Connecticut</data>
   <data key="d0">5</data>
 </node>
 <node id="EasternMichigan">
+  <data key="name">EasternMichigan</data>
   <data key="d0">6</data>
 </node>
 <node id="EastCarolina">
+  <data key="name">EastCarolina</data>
   <data key="d0">4</data>
 </node>
 <node id="Duke">
+  <data key="name">Duke</data>
   <data key="d0">0</data>
 </node>
 <node id="FresnoState">
+  <data key="name">FresnoState</data>
   <data key="d0">11</data>
 </node>
 <node id="OhioState">
+  <data key="name">OhioState</data>
   <data key="d0">2</data>
 </node>
 <node id="Houston">
+  <data key="name">Houston</data>
   <data key="d0">4</data>
 </node>
 <node id="Rice">
+  <data key="name">Rice</data>
   <data key="d0">11</data>
 </node>
 <node id="Idaho">
+  <data key="name">Idaho</data>
   <data key="d0">10</data>
 </node>
 <node id="Washington">
+  <data key="name">Washington</data>
   <data key="d0">8</data>
 </node>
 <node id="Kansas">
+  <data key="name">Kansas</data>
   <data key="d0">3</data>
 </node>
 <node id="SouthernMethodist">
+  <data key="name">SouthernMethodist</data>
   <data key="d0">11</data>
 </node>
 <node id="Kent">
+  <data key="name">Kent</data>
   <data key="d0">6</data>
 </node>
 <node id="Pittsburgh">
+  <data key="name">Pittsburgh</data>
   <data key="d0">1</data>
 </node>
 <node id="Kentucky">
+  <data key="name">Kentucky</data>
   <data key="d0">9</data>
 </node>
 <node id="Louisville">
+  <data key="name">Louisville</data>
   <data key="d0">4</data>
 </node>
 <node id="LouisianaTech">
+  <data key="name">LouisanaTech</data>
   <data key="d0">11</data>
 </node>
 <node id="LouisianaMonroe">
+  <data key="name">LouisianaMonroe</data>
   <data key="d0">10</data>
 </node>
 <node id="Minnesota">
+  <data key="name">Minnesota</data>
   <data key="d0">2</data>
 </node>
 <node id="MiamiOhio">
+  <data key="name">MiamiOhio</data>
   <data key="d0">6</data>
 </node>
 <node id="Vanderbilt">
+  <data key="name">Vanderbilt</data>
   <data key="d0">9</data>
 </node>
 <node id="MiddleTennesseeState">
+  <data key="name">MiddleTennesseeState</data>
   <data key="d0">10</data>
 </node>
 <node id="Illinois">
+  <data key="name">Illinois</data>
   <data key="d0">2</data>
 </node>
 <node id="MississippiState">
+  <data key="name">MississippiState</data>
   <data key="d0">9</data>
 </node>
 <node id="Memphis">
+  <data key="name">Memphis</data>
   <data key="d0">4</data>
 </node>
 <node id="Nevada">
+  <data key="name">Nevada</data>
   <data key="d0">11</data>
 </node>
 <node id="Oregon">
+  <data key="name">Oregon</data>
   <data key="d0">8</data>
 </node>
 <node id="NewMexicoState">
+  <data key="name">NewMexicoState</data>
   <data key="d0">10</data>
 </node>
 <node id="SouthCarolina">
+  <data key="name">SouthCarolina</data>
   <data key="d0">9</data>
 </node>
 <node id="Ohio">
+  <data key="name">Ohio</data>
   <data key="d0">6</data>
 </node>
 <node id="IowaState">
+  <data key="name">IowaState</data>
   <data key="d0">3</data>
 </node>
 <node id="SanJoseState">
+  <data key="name">SanJoseState</data>
   <data key="d0">11</data>
 </node>
 <node id="Nebraska">
+  <data key="name">Nebraska</data>
   <data key="d0">3</data>
 </node>
 <node id="SouthernMississippi">
+  <data key="name">SouthernMississippi</data>
   <data key="d0">4</data>
 </node>
 <node id="Tennessee">
+  <data key="name">Tennessee</data>
   <data key="d0">9</data>
 </node>
 <node id="Stanford">
+  <data key="name">Stanford</data>
   <data key="d0">8</data>
 </node>
 <node id="WashingtonState">
+  <data key="name">WashingtonState</data>
   <data key="d0">8</data>
 </node>
 <node id="Temple">
+  <data key="name">Temple</data>
   <data key="d0">1</data>
 </node>
 <node id="Navy">
+  <data key="name">Navy</data>
   <data key="d0">5</data>
 </node>
 <node id="TexasA&amp;M">
+  <data key="name">TexasA&amp;M</data>
   <data key="d0">3</data>
 </node>
 <node id="NotreDame">
+  <data key="name">NotreDame</data>
   <data key="d0">5</data>
 </node>
 <node id="TexasElPaso">
+  <data key="name">TexasElPaso</data>
   <data key="d0">11</data>
 </node>
 <node id="Oklahoma">
+  <data key="name">Oklahoma</data>
   <data key="d0">3</data>
 </node>
 <node id="Toledo">
+  <data key="name">Toledo</data>
   <data key="d0">6</data>
 </node>
 <node id="Tulane">
+  <data key="name">Tulane</data>
   <data key="d0">4</data>
 </node>
 <node id="Mississippi">
+  <data key="name">Mississippi</data>
   <data key="d0">9</data>
 </node>
 <node id="Tulsa">
+  <data key="name">Tulsa</data>
   <data key="d0">11</data>
 </node>
 <node id="NorthCarolina">
+  <data key="name">NorthCarolina</data>
   <data key="d0">0</data>
 </node>
 <node id="UtahState">
+  <data key="name">UtahState</data>
   <data key="d0">5</data>
 </node>
 <node id="Army">
+  <data key="name">Army</data>
   <data key="d0">4</data>
 </node>
 <node id="Cincinnati">
+  <data key="name">Cincinnati</data>
   <data key="d0">4</data>
 </node>
 <node id="AirForce">
+  <data key="name">Airforce</data>
   <data key="d0">7</data>
 </node>
 <node id="Rutgers">
+  <data key="name">Rutgers</data>
   <data key="d0">1</data>
 </node>
 <node id="Georgia">
+  <data key="name">Georgia</data>
   <data key="d0">9</data>
 </node>
 <node id="LouisianaState">
+  <data key="name">LouisianaState</data>
   <data key="d0">9</data>
 </node>
 <node id="LouisianaLafayette">
+  <data key="name">LouisianaLafayette</data>
   <data key="d0">10</data>
 </node>
 <node id="Texas">
+  <data key="name">Texas</data>
   <data key="d0">3</data>
 </node>
 <node id="Marshall">
+  <data key="name">Marshall</data>
   <data key="d0">6</data>
 </node>
 <node id="MichiganState">
+  <data key="name">MichiganState</data>
   <data key="d0">2</data>
 </node>
 <node id="MiamiFlorida">
+  <data key="name">MiamiFlorida</data>
   <data key="d0">1</data>
 </node>
 <node id="Missouri">
+  <data key="name">Missouri</data>
   <data key="d0">3</data>
 </node>
 <node id="Clemson">
+  <data key="name">Clemson</data>
   <data key="d0">0</data>
 </node>
 <node id="NevadaLasVegas">
+  <data key="name">NevadaLasVegas</data>
   <data key="d0">7</data>
 </node>
 <node id="WakeForest">
+  <data key="name">WakeForest</data>
   <data key="d0">0</data>
 </node>
 <node id="Indiana">
+  <data key="name">Indiana</data>
   <data key="d0">2</data>
 </node>
 <node id="OklahomaState">
+  <data key="name">OklahomaState</data>
   <data key="d0">3</data>
 </node>
 <node id="OregonState">
+  <data key="name">OregonState</data>
   <data key="d0">8</data>
 </node>
 <node id="Maryland">
+  <data key="name">Maryland</data>
   <data key="d0">0</data>
 </node>
 <node id="TexasChristian">
+  <data key="name">TexasChristian</data>
   <data key="d0">4</data>
 </node>
 <node id="California">
+  <data key="name">California</data>
   <data key="d0">8</data>
 </node>
 <node id="AlabamaBirmingham">
+  <data key="name">AlabamaBirmingham</data>
   <data key="d0">4</data>
 </node>
 <node id="Arkansas">
+  <data key="name">Arkansas</data>
   <data key="d0">9</data>
 </node>
 <node id="Hawaii">
+  <data key="name">Hawaii</data>
   <data key="d0">11</data>
 </node>
 <edge source="BrighamYoung" target="FloridaState"/>
