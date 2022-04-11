@@ -11,6 +11,7 @@
 #include <iterator>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 using namespace boost;
 
@@ -233,50 +234,51 @@ void Girvan_Newman::setEdgeBetweeness(std::vector<Graph::vertex_descriptor>& pat
 }
 
 //Calculates the total modularity from the passed arguments.
-void Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>& paths,
-                         double& modularity, double& normalizing_cost, int& original_edges){
+double Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>& paths, int original_edges){
 
     double sum = 0.0;
+    double modularity = 0.0;
     //Sums the number of edges in the graph - the number of expected edges in the graph
-    for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){
+    for(auto vp = vertices(graph); vp.first != vp.second; vp.first++){ // just runs through all the vertices
 
-        Graph::vertex_descriptor s = *vp.first;
+        Graph::vertex_descriptor firstNode = *vp.first;
 
         for(auto vp2 = vertices(graph); vp2.first != vp2.second; vp2.first++){
 
-            Graph::vertex_descriptor t = *vp2.first;
+            Graph::vertex_descriptor secondNode = *vp2.first;
 
-            double degree_s_t = degree(s, graph) * degree(t, graph);
+            double delta = 0.0;
+
+            double degree_s_t = degree(firstNode, graph) * degree(secondNode, graph); // used in finding what expected edges should be
 
             double nodeA = 0.0;
-            if(edge(s, t, graph).second) //if the vertices are directly connected
+            if(edge(firstNode, secondNode, graph).second) //if the vertices are directly connected
                 nodeA = 1.0;
-            else if(s == t)
+            else if(firstNode == secondNode)
                 continue;
-            else{
 
-                //if a path between the vertices exist, nodeA = number of edges in-between
-                for(auto& path: paths){
 
-                    if(path.front() == s && path.back() == t){
-                        nodeA = path.size()-1;
-                        break;
-                    }
+            //if a path between the vertices exist, find delta = number of edges in-between
+            for(auto& path: paths){
+                if(path.front() == firstNode && path.back() == secondNode){
+                    delta = 2;
+                    break;
                 }
             }
 
-            if(nodeA == 0)
-                sum += 0;
-            else
-                sum += (nodeA - (degree_s_t / (2.0 * original_edges)));
-            //Is there a way to determine if the vertices are in the same community?
-            //^ see https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.community.quality.modularity.html
+
+
+
+            sum += (nodeA - (degree_s_t / (2.0 * original_edges))) * delta;
         }
+
     }
 
-    modularity = normalizing_cost * sum;
-    //^ sum seems to increase with every edge removed, making modularity increase instead of decreasing
+    modularity =  sum / (2.0 * original_edges);
+    return modularity;
 }
+
+
 
 //function for the algo itself and output results to a file
 void Girvan_Newman::computeGroups(){
@@ -299,11 +301,14 @@ void Girvan_Newman::computeGroups(){
     findShortestPaths(edgesBetweenValues, paths);
 
     int original_edges = num_edges(graph); //used to calculate the modularity
-    double normalizing_cost = 1.0 / (4.0*original_edges);
+    //int num_vert = num_vertices(graph);
+    double normalizing_cost = 1.0 / (2.0*original_edges);
 
     /* The metric used to signal that communities have been found. If total_modularity < 0.7, then
      * the algorithm will stop. Otherwise, continue to remove edges. */
     double total_modularity = 0;
+    double prev_modularity = 0;
+    bool cont = true;
 
     //Girvan Newman Algorithm
     do{
@@ -341,32 +346,35 @@ void Girvan_Newman::computeGroups(){
         paths.clear();
         findShortestPaths(edgesBetweenValues, paths);
 
+        prev_modularity = total_modularity - 0.002; //helps approach a better optimization
+
         //calculate total_modularity
-        calculateModularity(paths, total_modularity, normalizing_cost, original_edges);
+        total_modularity = calculateModularity(paths, original_edges);
+        //total_modularity = findModularity(paths, original_edges);
+
+        cont = total_modularity > prev_modularity;
 
         std::cout << "Modularity = " << total_modularity << std::endl;
-    }while(total_modularity > 0.7);
+
+    }while(cont);
 
     std::cout << "Communities have been found!" << std::endl;
 
     //fill in the communities & output it to a file
+    dynamic_properties dp(ignore_other_properties);
+    dp.property("name", get(&VertexData::name, graph));
+    dp.property("value", get(&VertexData::value, graph));
 
-    // https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1482622/ <-- for the modularity
-    // https://www.youtube.com/watch?v=LtQoPEKKRYM
-    // https://medium.com/analytics-vidhya/girvan-newman-the-clustering-technique-in-network-analysis-27fe6d665c92
-    // ^ links for girvan newman help
+    std::filebuf fb;
+    fb.open ("../data/output.graphml",std::ios::out);
+    std::ostream fileOutput(&fb);
 
-    /* How to remove an edge:
-     * reqs: 2 vertex_descriptors & the graph
-     * example:
-     *          vertex_descriptor rip = something;
-     *          vertex_descriptor sleep = something2; //The 2 vertex_descriptors are what's connected by the edge
-     *                                                //that you want to remove. Removing an edge will not remove
-     *                                                //the vertices.
-     *          remove_edge(rip, sleep, graph);
-     *
-     * How to find an edge in the graph:
-     * reqs: same as ^
-     * example:
-     *          boost::edge(hm, huh, test).first; //Remember that an edge is a pair<vertex_descriptor, bool>*/
+    write_graphml(fileOutput, graph, dp, true);
+    fb.close();
+
+
 }
+
+
+
+

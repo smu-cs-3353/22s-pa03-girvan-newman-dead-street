@@ -2,7 +2,7 @@
 # Created by Michael Amberg  3/30/2022
 
 import networkx as nx
-import lxml.etree as lxmletree
+# import lxml.etree as lxmletree
 
 path = "data/"
 graph = nx.read_gml(path+"football.gml")
