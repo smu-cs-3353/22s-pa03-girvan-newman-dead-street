@@ -18,7 +18,7 @@ directory. If you wish to test a different gml file, you must change the file pa
 
 We can also use the NetworkX library to generate random and undirected graphs with the script generation.py . This will generate a graphML file called
 "randomGraph.graphml" in the data directory. If you wish to use pre-existing graphs like Zachary's Karate Club, Les Misérables, or Florentine's Families, use the
-script pullOtherCommunities.py to generate the graphML files for those graphs the data directory.
+script pullOtherCommunities.py to generate the graphML files for those graphs, which can also be found in the data directory.
 
 
 To convert gml to graphML:
@@ -51,16 +51,16 @@ Here's an example of how to run the program:
 
 ## Implementation of the Girvan Newman Algorithm
 
+Boost's [BGL library](https://www.boost.org/doc/libs/1_78_0/libs/graph/doc/index.html) is what we use to represent and manipulate graphs. All functions used for
+the algorithm can be found in the Girvan_Newman class (.h/.cpp).
+
 ### Creating the Graph
 
-We primarily use Boost's [BGL library](https://www.boost.org/doc/libs/1_78_0/libs/graph/doc/index.html) since it has functionality in reading graphML files.
-
-We use an adjacency list to represent the graph itself.
+An adjacency list is used to represent an undirected and unweighted graph, which is filled with the contents of the input graphML file. Boost has functionality for reading graphML files thanks to the read_graphml function, and we use that when reading the graphML file.
 
 ### Finding the Shortest Path and Edge Betweeness
 
-Shortest paths are found through bidirectional search. Doing 2 BFS that will search from the source and target vertices, which would give O(b ^ d/2).
-I mean, our graphs can get pretty large soooo
+The first step to Girvan Newman is to find all the shortest paths and determine their edge betweenness (more on that later). Graphs can easily become dense and complex with more vertices or edges, so a singular BFS searching from start to finish would become inefficient as the distance between the starting and finishing vertices grow. Shortest paths are found through bidirectional search. Doing 2 BFS that will search from the source and target vertices, which would give O(b ^ d/2).
 
 We assign edge weights based on the shortest paths. With every shortest path found, we update the edges that were used in that path. Once all the paths
 are generated, we divide it by the total shortest paths. Lastly, to make the next step of the alogirthm easier, we sort the edge values in descending order.
@@ -77,13 +77,18 @@ Outputting the communities
 ## Testing on the Football Dataset
 
 GRAPH OUTPUT
+
 DETERMINE ITS ACCURACY
 
 
 ## Testing on Random/Other Graphs
 
 GRAPH OUTPUT
+
 DETERMINE ITS ACCURACY
+
+
+## Link to our blog posts?
 
 
 ## Authors
