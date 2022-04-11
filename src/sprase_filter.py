@@ -19,32 +19,18 @@ def fit_sparse_filter(matrix, features, runs, verb):
         # Step 1: non-linear processing of dataset with randomized weight matrix weights
         weights = weights.reshape(features, dataset.shape[0])
         pre_processed = np.dot(weights, dataset)
-        processed = np.sqrt(pre_processed ** 2 + 1e-8) # F
+        processed = np.sqrt(pre_processed ** 2 + 1e-8)  # F
 
         # Step 2: L2 normalization (LSE) along features (rows)
         row_normalized_matrix = processed / norm(processed, axis=0, keepdims=True)  # F tilde
 
         # Step 3: L2 normalization (LSE) along the samples (columns)
-        column_normalized_matrix = row_normalized_matrix / norm(row_normalized_matrix, axis=1, keepdims=True)
-        # F hat
+        column_normalized_matrix = row_normalized_matrix / norm(row_normalized_matrix, axis=1, keepdims=True)  # F hat
 
         # Step 4: Minimize (L-BFGS) the L1 normalization
         objective_value = norm(column_normalized_matrix, ord=1, keepdims=True)
-
-        # These gradient calculations were basically lifted right out of the library but don't seem to work...
-        gradient = _compute_gradient(np.transpose(row_normalized_matrix), column_normalized_matrix,
-                                     norm(row_normalized_matrix, axis=1, keepdims=True),
-                                     np.ones_like(column_normalized_matrix))
-        gradient = _compute_gradient(processed, row_normalized_matrix, norm(processed, axis=0, keepdims=True),
-                                     np.transpose(gradient))
-        gradient = np.dot((gradient * (pre_processed / processed)), np.transpose(dataset))
-
         return objective_value
 
-    def _compute_gradient(A, B, C, D):
-        return D / C - B * (D * A).sum(1) / (C ** 2)
-
-    final_weights, f, d = fmin_l_bfgs_b(_objective_function, rand_weights.flatten(), maxfun=runs, maxiter=runs,
-    iprint=verb,
+    final_weights, f, d = fmin_l_bfgs_b(_objective_function, rand_weights.flatten(), maxfun=runs, iprint=verb,
                                         approx_grad=True)
     return final_weights.reshape(features, dataset.shape[0])
