@@ -12,7 +12,7 @@ import networkx as netx
 from matrix_generator import get_similarity_matrix
 from matrix_generator import get_adjacency_matrix
 from sprase_filter import fit_sparse_filter
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 from sklearn.metrics.cluster import normalized_mutual_info_score
 from collections import defaultdict
 import matplotlib.pyplot as plt
@@ -25,9 +25,9 @@ parser.add_argument("-i", "--input", type=str, required=True, help="A relative p
 parser.add_argument("-m", "--method", type=str, required=True, choices=["ADJ", "DICE", "OVERLAP"], help="Methodology "
                                                                                                         "for for graph "
                                                                                                         "conversion.")
-parser.add_argument("-r", "--runs", type=int, required=False, default=500, help="A value between 1 and INT_MAX for "
+parser.add_argument("-r", "--runs", type=int, required=False, default=200, help="A value between 1 and INT_MAX for "
                                                                                 "LM-BFGS optimization")
-parser.add_argument("-v", "--verbosity", type=int, required=False, default=97, help="A value between -1 and 101 for "
+parser.add_argument("-v", "--verbosity", type=int, required=False, default=20, help="A value between -1 and 101 for "
                                                                                     "debugging and statistical output.")
 args = parser.parse_args()
 
@@ -42,7 +42,8 @@ if not os.path.isdir(os.getcwd() + "/../data"):
                        "Please check your run configuration")
 
 # Step one: Import a graph
-graph = netx.read_graphml(args.input)
+#graph = netx.read_graphml(args.input)
+graph = netx.karate_club_graph()
 
 # Step two: Convert graph into similarity matrix form
 # ADJ = test case, known good matrix form
@@ -51,7 +52,7 @@ graph = netx.read_graphml(args.input)
 matrix = get_adjacency_matrix(graph) if args.method == "ADJ" else get_similarity_matrix(graph, args.method)
 
 modularity_dict = {}
-for run_num in range(1):  # Debug, should be (1, 11) for 10 runs (300 clustering attempts total)
+for run_num in range(1, 11):
     print("=== Run number " + str(run_num) + " ===")
 
     # Step three: Run deep sparse filtering (1-5 layers) on each matrix
@@ -61,8 +62,6 @@ for run_num in range(1):  # Debug, should be (1, 11) for 10 runs (300 clustering
     while True:
         print("Learning " + str(num_features) + " features...")
         features = fit_sparse_filter(last_features, num_features, args.runs, args.verbosity)
-        # estimate = ShallowSparseFilter(num_features, args.runs, args.verbosity)
-        # features = estimate.fit_transform(last_features)
         last_features = features
         num_features = int(pow(2, int(math.log(num_features - 1, 2))))  # next closest power of 2 less than num_features
         itr += 1
@@ -70,7 +69,6 @@ for run_num in range(1):  # Debug, should be (1, 11) for 10 runs (300 clustering
             break
 
     # Step four: Run clustering algorithm on sparse matrix
-
     """
     # DEBUG INFORMATION - UNCOMMENT FOR EXTRA FIGURES
     plt.hist(last_features.flat, bins=50)
@@ -78,28 +76,18 @@ for run_num in range(1):  # Debug, should be (1, 11) for 10 runs (300 clustering
     plt.ylabel("Count")
     plt.title("Feature activation histogram")
     plt.show()
-
-    wcss = []
-    for i in range(1, 11):
-        kmeans = KMeans(i, n_init=30)
-        kmeans.fit(last_features)
-        wcss_iter = kmeans.inertia_
-        wcss.append(wcss_iter)
-
-    number_clusters = range(1, 11)
-    plt.plot(number_clusters, wcss)
-    plt.title('The Elbow title')
-    plt.xlabel('Number of clusters')
-    plt.ylabel('WCSS')
-    plt.show()
     """
+
 
     cluster_list = []
     num_community_est = 3  # Should be calculated through WCSS or something
     for i in range(0, 30):
-        kmeans = KMeans(num_community_est, n_init=1)  # Change init to be closer to default of 10?
-        kmeans.fit(last_features)
-        cluster_list.append(kmeans.fit_predict(last_features))
+        #kmeans = KMeans(num_community_est, n_init=5)  # Change init to be closer to default of 10?
+        #kmeans.fit(last_features)
+        #cluster_list.append(kmeans.fit_predict(last_features))
+        clustering = DBSCAN(eps=1.15, min_samples=3)
+        clustering.fit(last_features)
+        cluster_list.append(clustering.fit_predict(last_features))
 
     node_dict = defaultdict(set)
     for cluster in cluster_list:
@@ -116,12 +104,14 @@ color_map = []
 
 # Needs to be extensible for n communities, if desired
 for color in best_cluster:
-    if color == 0:
+    if color == -1:
         color_map.append('blue')
-    if color == 1:
+    if color == 0:
         color_map.append('red')
-    if color == 2:
+    if color == 1:
         color_map.append('green')
+    if color == 2:
+        color_map.append('yellow')
 
 mapping = dict(zip(graph, range(1, graph.number_of_nodes() + 1)))
 graph = netx.relabel_nodes(graph, mapping)
