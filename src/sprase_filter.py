@@ -39,6 +39,7 @@ def fit_sparse_filter(matrix, features, runs, verb):
         # Step 1: non-linear processing of dataset with randomized weight matrix weights
         weights = weights.reshape(features, dataset.shape[0])
 
+        # Steps 2 & 3 inside...
         pre_processed, processed, row_norm_sum, row_normalized_matrix, col_norm_sum, column_normalized_matrix = \
             _get_attributes(weights, dataset)
 
@@ -63,4 +64,4 @@ def fit_sparse_filter(matrix, features, runs, verb):
     final_weights, f, d = fmin_l_bfgs_b(_objective_function, rand_weights.flatten(), maxfun=runs, iprint=verb)
     final_weights = final_weights.reshape(features, dataset.shape[0])
 
-    return _get_attributes(final_weights, dataset)[5]  # column_normalized_matrix
+    return _get_attributes(final_weights, dataset)[5]  # Return F hat
