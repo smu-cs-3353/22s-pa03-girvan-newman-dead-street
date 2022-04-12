@@ -9,17 +9,16 @@ import argparse
 import os
 import random
 
-import networkx
 import networkx as netx
+import networkx.algorithms.community as nx_comm
 import numpy as np
+import matplotlib.pyplot as plt
 
 from matrix_generator import get_similarity_matrix
 from matrix_generator import get_adjacency_matrix
 from sprase_filter import fit_sparse_filter
 from sklearn.cluster import KMeans
 from collections import defaultdict
-import matplotlib.pyplot as plt
-import networkx.algorithms.community as nx_comm
 
 # Step zero: Argument parsing & sanity checks
 parser = argparse.ArgumentParser(description="Computes communities in undirected, unweighted graphs by leveraging "
@@ -92,7 +91,7 @@ for run_num in range(1, 11):
     node_dict = defaultdict(set)
     for cluster in cluster_list:
         node_num = 0
-        for node_id in networkx.nodes(graph):
+        for node_id in netx.nodes(graph):
             node_dict[cluster[node_num]].add(node_id)
             node_num += 1
         quality = nx_comm.partition_quality(graph, node_dict.values())[1]
