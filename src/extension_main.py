@@ -41,11 +41,11 @@ if not any(vars(args).values()):
     raise RuntimeError("Extension must have graph filename, matrix method, and optionally verbosity specified as an "
                        "argument.\n"
                        "Format: python3 extension_main.py -i C:\\Reachable\\File\\Path.graphml -m <METHOD> "
-                       "-v <VERBOSITY>")
+                       "-r <RUNS> (optional) -v <VERBOSITY> (optional) -d <TRUE/FALSE> (optional)")
 
 if not os.path.isdir(os.getcwd() + "/../data"):
     raise RuntimeError("Invalid working directory relative to data directory.\n"
-                       "Please check your run configuration")
+                       "Please check your run configuration.")
 
 # Step one: Import a graph
 graph = netx.read_graphml(args.input)
