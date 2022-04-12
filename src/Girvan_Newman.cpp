@@ -257,7 +257,6 @@ double Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_
             else if(firstNode == secondNode)
                 continue;
 
-
             //if a path between the vertices exist, find delta = number of edges in-between
             for(auto& path: paths){
                 if(path.front() == firstNode && path.back() == secondNode){
@@ -265,9 +264,6 @@ double Girvan_Newman::calculateModularity(std::vector<std::vector<Graph::vertex_
                     break;
                 }
             }
-
-
-
 
             sum += (nodeA - (degree_s_t / (2.0 * original_edges))) * delta;
         }
@@ -301,8 +297,6 @@ void Girvan_Newman::computeGroups(){
     findShortestPaths(edgesBetweenValues, paths);
 
     int original_edges = num_edges(graph); //used to calculate the modularity
-    //int num_vert = num_vertices(graph);
-    double normalizing_cost = 1.0 / (2.0*original_edges);
 
     /* The metric used to signal that communities have been found. If total_modularity < 0.7, then
      * the algorithm will stop. Otherwise, continue to remove edges. */
@@ -314,6 +308,7 @@ void Girvan_Newman::computeGroups(){
     do{
 
         std::cout << "Edges: " << num_edges(graph) << " ... Paths: " << paths.size() << std::endl;
+
         // Calculate betweeness centrality for each edge
         for(auto ed: edgesBetweenValues){
             ed.second /= (double)paths.size();
@@ -350,7 +345,6 @@ void Girvan_Newman::computeGroups(){
 
         //calculate total_modularity
         total_modularity = calculateModularity(paths, original_edges);
-        //total_modularity = findModularity(paths, original_edges);
 
         cont = total_modularity > prev_modularity;
 
@@ -371,7 +365,6 @@ void Girvan_Newman::computeGroups(){
 
     write_graphml(fileOutput, graph, dp, true);
     fb.close();
-
 
 }
 
