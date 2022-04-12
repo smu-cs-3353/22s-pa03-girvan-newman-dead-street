@@ -4,7 +4,6 @@
 * set of data provided by an unweighted, undirected
 * graph.
 ****************************************************"""
-import math
 
 import numpy as np
 from numpy.linalg import norm
