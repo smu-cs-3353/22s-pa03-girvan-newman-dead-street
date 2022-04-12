@@ -128,15 +128,15 @@ graph = netx.relabel_nodes(graph, mapping)
 netx.draw(graph, node_color=color_map, with_labels=True)
 plt.show()
 
-# Need to be set per-graph, only useful when we know the ground truth of a graph's communities
 """
+# Need to be set per-graph, only useful when we know the ground truth of a graph's communities
 true_cluster = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
                 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
                 6,
                 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10,
                 10,
                 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11]
-"""
 # true_cluster = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-true_cluster = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
+# true_cluster = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
 print("NMI: " + str(normalized_mutual_info_score(best_cluster, true_cluster)))
+"""
