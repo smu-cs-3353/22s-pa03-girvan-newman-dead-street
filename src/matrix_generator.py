@@ -66,5 +66,3 @@ def __overlap_similarity(graph):
     similarity_matrix = np.array(node_similarities).reshape(-1, graph.number_of_nodes())
 
     return similarity_matrix
-
-# TODO: Add abundance version of Sørensen–Dice coefficient
