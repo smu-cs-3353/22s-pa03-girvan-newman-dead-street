@@ -61,9 +61,8 @@ For every shortest path found, we assign edge weights to the edges used in that 
 
 The algorithm continously removes edges with high edge betweenness centrality until it reaches a certain condition or metric. The metric we use to determine whether communities have been found is known as the modularity. A community is detected when the modularity is not equal to zero. Since there is no standardized quantity for modularity, we instead compare the modularity of the current graph to the previous modularity before edges were removed. If the current modularity is less than the previous modularity, that means all of the communities have been found and the algorithm will stop removing edges.
 
-Modularity is calculated from this [formula](https://medium.com/analytics-vidhya/girvan-newman-the-clustering-technique-in-network-analysis-27fe6d665c92):
-
-![equation](http://www.sciweavers.org/tex2img.php?eq=Q%28G%2CS%29%20%3D%20%20%20%5Cfrac%7B1%7D%7B2m%7D%20%5Csum_s%20%20%5Csum_i%20%20%5Csum_j%20%28%20A_%7Bij%7D%20-%20%20%5Cfrac%7B%20k_%7Bi%7D%20k_%7Bj%7D%20%20%7D%7B2m%7D%20%29&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
+Modularity is calculated from this formula:
+![1_-oCvsgi-QMkYnmkn-pJKgA](https://user-images.githubusercontent.com/79382708/162868619-475b38f9-7522-4e4c-911f-d5f4af80e0ec.png)
 
 Once the communities are found, the communities are written to a graphml file in the data directory called "output.graphml". If you wish to see the original graph and the communities visualized, you can use the Python script checkOutput.py to display the results. Please note that when testing different graphs, you must change the file paths in checkOutput.py so that the right graphs are displayed.
 
@@ -74,21 +73,45 @@ python pythonThings\checkOutput.py
 ```
 
 
-## Testing on the Football Dataset
+## Testing on the Football Teams Dataset
 
-GRAPH OUTPUT
+The Original Graph:
 
-DETERMINE ITS ACCURACY... Not that accurate but it could be cause its more dense and our current modularity formula does not work as well.
+![football_origin](https://user-images.githubusercontent.com/79382708/162868712-a8a8244b-7291-4125-99cd-3612c828845f.png)
 
+The Communities Found in the Graph:
+
+![football_groups](https://user-images.githubusercontent.com/79382708/162868709-f4a567b8-048e-4ba6-b290-60861d6b82f8.png)
+
+According to the second picture, the algorithm detected one large community and several smaller communities that are supposed to represent the different football conferences. While this shows that our implementation is capable of detecting communities, it is not as accurate as we would assume since there are communities only made up of one node/team. A reason for this could be because of the edge betweenness and modularity. Since the algorithm relies on these values, it is possible that our implementation/calculation for these values are not optiminal for large and dense graphs like the football teams graph. Although the algorithm may not work as effectively in a massive graph, perhaps it will perform better in a smaller graph.
 
 ## Testing on Random/Other Graphs
 
-GRAPH OUTPUT
+Florentine Families Graph
 
-DETERMINE ITS ACCURACY... It's better lmao
+![Fams_origin](https://user-images.githubusercontent.com/79382708/162876725-5818dadc-e7ae-4764-99b0-5986348f45f0.png)
 
+Communities Found In Florentine Families
 
-## Link to our blog posts?
+![Fams_groups](https://user-images.githubusercontent.com/79382708/162876731-74dc7245-0e46-460d-95f0-3175a42e676c.png)
+
+Random Graph:
+
+![random_origin](https://user-images.githubusercontent.com/79382708/162873395-0764b7bd-b4e6-4fee-b136-a0fde2242db6.png)
+
+Communities Found in Random
+
+![random_groups](https://user-images.githubusercontent.com/79382708/162873393-e85c514e-21ef-4fec-bf37-5d963c9000f7.png)
+
+Random Graph 2:
+
+![random_origin2](https://user-images.githubusercontent.com/79382708/162876177-2c87555e-8f92-40ff-9bfd-f0cad50886fc.png)
+
+Communities Found in Random 2:
+
+![random_groups2](https://user-images.githubusercontent.com/79382708/162876168-a3343a79-ae0e-4f40-a859-54b1e93d5c56.png)
+
+Just like with the football dataset, the algorithm also detected communities in smaller and randomly-generated graphs.
 
 
 ## Authors
