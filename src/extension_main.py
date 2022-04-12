@@ -17,7 +17,6 @@ from matrix_generator import get_similarity_matrix
 from matrix_generator import get_adjacency_matrix
 from sprase_filter import fit_sparse_filter
 from sklearn.cluster import KMeans
-from sklearn.metrics.cluster import normalized_mutual_info_score
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import networkx.algorithms.community as nx_comm
@@ -130,6 +129,7 @@ plt.show()
 
 """
 # Need to be set per-graph, only useful when we know the ground truth of a graph's communities
+from sklearn.metrics.cluster import normalized_mutual_info_score
 true_cluster = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2,
                 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
                 6,
