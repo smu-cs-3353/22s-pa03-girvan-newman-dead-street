@@ -22,7 +22,8 @@ import matplotlib.pyplot as plt
 import networkx.algorithms.community as nx_comm
 
 # Step zero: Argument parsing & sanity checks
-parser = argparse.ArgumentParser(description="Experiment")
+parser = argparse.ArgumentParser(description="Computes communities in undirected, unweighted graphs by leveraging "
+                                             "deep sparse filtering on matrix representations of said graph.")
 parser.add_argument("-i", "--input", type=str, required=True, help="A relative path to a graphml file.")
 parser.add_argument("-m", "--method", type=str, required=True, choices=["ADJ", "DICE", "OVERLAP"], help="Methodology "
                                                                                                         "for for graph "
