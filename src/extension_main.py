@@ -28,7 +28,7 @@ parser.add_argument("-i", "--input", type=str, required=True, help="A relative p
 parser.add_argument("-m", "--method", type=str, required=True, choices=["ADJ", "DICE", "OVERLAP"], help="Methodology "
                                                                                                         "for for graph "
                                                                                                         "conversion.")
-parser.add_argument("-r", "--runs", type=int, required=False, default=150, help="A value between 1 and INT_MAX for "
+parser.add_argument("-r", "--runs", type=int, required=False, default=100, help="A value between 1 and INT_MAX for "
                                                                                 "LM-BFGS optimization")
 parser.add_argument("-v", "--verbosity", type=int, required=False, default=-1, help="A value between -1 and 101 for "
                                                                                     "debugging and statistical output.")
