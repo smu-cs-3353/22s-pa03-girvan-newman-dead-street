@@ -43,7 +43,7 @@ Here's an example of how to run the program:
 ```
 
 
-## Implementation of the Girvan Newman Algorithm
+## Implementation of the Girvan-Newman Algorithm
 
 Boost's [BGL library](https://www.boost.org/doc/libs/1_78_0/libs/graph/doc/index.html) is what we use to represent and manipulate graphs. All functions used for the algorithm can be found in the Girvan_Newman class (.h/.cpp).
 
@@ -53,7 +53,7 @@ An adjacency list is used to represent an undirected and unweighted graph, which
 
 ### Finding the Shortest Path and Edge Betweenness Centrality
 
-The first step in the Girvan Newman algorithm is to find all the shortest paths. Graphs can become dense and complex with more vertices or edges. A single BFS searching from start to finish would become inefficient as the distance between the start and finish vertices grow, so we use a bidirectional search to find the shortest paths. With a bidirectional search, which is doing a BFS with the starting vertex and a BFS with the finishing vertex, the shortest path is found when both BFSs intersect. Thus, the time required to traverse the graph is shortened by half and gives a time complexity of O( b<sup>d/2</sup> ).
+The first step in the Girvan-Newman algorithm is to find all the shortest paths. Graphs can become dense and complex with more vertices or edges. A single BFS searching from start to finish would become inefficient as the distance between the start and finish vertices grow, so we use a bidirectional search to find the shortest paths. With a bidirectional search, which is doing a BFS with the starting vertex and a BFS with the finishing vertex, the shortest path is found when both BFSs intersect. Thus, the time required to traverse the graph is shortened by half and gives a time complexity of O( b<sup>d/2</sup> ).
 
 For every shortest path found, we assign edge weights to the edges used in that path. The edge weights are stored in a vector of pairs of the graph's edges and their values. This value is the edge betweenness centrality, which is defined by the edge weight (the total number of times an edge is used) divided by the total number of shortest paths in the graph. Once all paths are found and the edge betweenness values are assigned, the vector of pairs is sorted by the edge betweeness values in descending order. This makes it easier for us to find the edge with the highest edge betweenness centrality.
 
@@ -111,7 +111,7 @@ Communities Found in Random 2:
 
 ![random_groups2](https://user-images.githubusercontent.com/79382708/162876168-a3343a79-ae0e-4f40-a859-54b1e93d5c56.png)
 
-Just like with the football dataset, the algorithm also detected communities in smaller and randomly-generated graphs.
+Just like with the football dataset, the algorithm also detected communities in smaller and randomly-generated graphs. These communities are more evenly distributed than the communities in the football dataset as they do not have a community of one node. To further check our implementation, we tested other smaller real-world graphs like Zachary's Karate Club and the Florentine Families. While the algorithm was able to show the communities of the Florentine Families, it could not do so for Karate Club. The reason for this could be because the modularity is not decreasing, which causes the algorithm to remove all of the edges. Therefore, our implementation of Girvan-Newman algorithm is capable of detecting communities, but only on sufficiently-sized graphs.
 
 
 ## Authors
