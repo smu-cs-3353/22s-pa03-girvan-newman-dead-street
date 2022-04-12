@@ -28,11 +28,13 @@ parser.add_argument("-m", "--method", type=str, required=True, choices=["ADJ", "
                                                                                                         "for for graph "
                                                                                                         "conversion.")
 parser.add_argument("-r", "--runs", type=int, required=False, default=100, help="A value between 1 and INT_MAX for "
-                                                                                "LM-BFGS optimization")
+                                                                                "LM-BFGS optimization. Default: 100")
 parser.add_argument("-v", "--verbosity", type=int, required=False, default=-1, help="A value between -1 and 101 for "
-                                                                                    "debugging and statistical output.")
+                                                                                    "debugging and statistical "
+                                                                                    "output. Default: -1")
 parser.add_argument("-d", "--debug", type=bool, required=False, default=False, help="Generates additional data about "
-                                                                                    "the sparse filter if enabled.")
+                                                                                    "the sparse filter if enabled. "
+                                                                                    "Default: False")
 args = parser.parse_args()
 
 if not any(vars(args).values()):
