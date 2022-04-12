@@ -49,6 +49,9 @@ if not os.path.isdir(os.getcwd() + "/../data"):
 
 # Step one: Import a graph
 graph = netx.read_graphml(args.input)
+if args.debug:
+    netx.draw(graph, with_labels=True)
+    plt.show()
 
 # Step two: Convert graph into similarity matrix form
 # ADJ = test case, known good matrix form
@@ -71,8 +74,8 @@ for run_num in range(1, 11):
         last_features = features
 
     wcss = []
-    for i in range(1, graph.number_of_nodes()):
-        kmeans = KMeans(i, n_init=1)
+    for i in range(1, graph.number_of_nodes() // 2):
+        kmeans = KMeans(i, n_init=5)
         kmeans.fit(last_features)
         wcss.append(kmeans.inertia_)
     deltas = np.diff(wcss)
@@ -84,7 +87,7 @@ for run_num in range(1, 11):
     print("Clustering...")
     cluster_list = []
     for i in range(0, 30):
-        kmeans = KMeans(num_community_est, n_init=5)  # Change init to be closer to default of 10?
+        kmeans = KMeans(num_community_est)
         kmeans.fit(last_features)
         cluster_list.append(kmeans.fit_predict(last_features))
 
@@ -124,8 +127,6 @@ for community in best_cluster:
         seen_communities[community] = "#" + "".join([random.choice("ABCDEF0123456789") for nibble in range(6)])
     color_map.append(seen_communities[community])
 
-mapping = dict(zip(graph, range(1, graph.number_of_nodes() + 1)))
-graph = netx.relabel_nodes(graph, mapping)
 netx.draw(graph, node_color=color_map, with_labels=True)
 plt.show()
 
@@ -140,5 +141,6 @@ true_cluster = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
                 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11]
 # true_cluster = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 # true_cluster = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2]
+# true_cluster = [0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4]
 print("NMI: " + str(normalized_mutual_info_score(best_cluster, true_cluster)))
 """
