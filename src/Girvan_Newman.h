@@ -8,6 +8,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
+#include <boost/graph/copy.hpp>
 #include <string>
 #include <vector>
 #include <list>
@@ -40,8 +41,7 @@ class Girvan_Newman {
             void setEdgeBetweeness(std::vector<Graph::vertex_descriptor>&,
                                    std::vector<std::pair<Graph::edge_descriptor, double>>&);
 
-            void calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>&,
-                                     double&, double&, int&);
+            double calculateModularity(std::vector<std::vector<Graph::vertex_descriptor>>&, int);
     public:
             Girvan_Newman(const std::string&);
             void printGraph();
