@@ -115,13 +115,18 @@ Communities Found in Random 2:
 
 Just like with the football dataset, the algorithm also detected communities in smaller and randomly-generated graphs. These communities are more evenly distributed than the communities in the football dataset as they do not have a community of one node. To further check our implementation, we tested other smaller real-world graphs like Zachary's Karate Club and the Florentine Families. While the algorithm was able to show the communities of the Florentine Families, it could not do so for Karate Club. The reason for this could be because the modularity is not decreasing, which causes the algorithm to remove all of the edges. Therefore, our implementation of Girvan-Newman algorithm is capable of detecting communities, but only on sufficiently-sized graphs.
 
-
 ## Authors
 
 * **Ashley Genato** - *@agenato*
 * **Bryce Shurts** - *@S-Bryce*
 * **Michael Amberg** - *@SaltyPeachcake*
 
+## Medium Articles
+Part 1: https://medium.com/smucs/an-application-of-sparse-filtering-in-community-detection-part-1-c9ff782d109
+
+Part 2: https://medium.com/smucs/an-application-of-sparse-filtering-in-community-detection-part-2-methodology-757a829f94fd
+
+Part 3: https://medium.com/smucs/an-application-of-deep-sparse-filtering-in-community-detection-part-3-3d197e86a045
 
 ## Acknowledgments
 
