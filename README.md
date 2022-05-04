@@ -2,6 +2,8 @@
 
 This repo's focus is to use the Girvan Newman algorithm to detect communities in dense networks/graphs.
 
+For more information about our extension, which is also contained within this repo, please take a look at our [medium article series](https://medium.com/smucs/an-application-of-sparse-filtering-in-community-detection-part-1-c9ff782d109).
+
 ## Getting Started
 
 Please note that this project will run Python 3 and C++ programs in the CLion IDE.
